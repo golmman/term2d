@@ -1,7 +1,15 @@
 [package]
-name = "term2d"
-version = "0.1.0"
+authors = ["golmman"]
+description = "Simple drawing engine for terminal applications"
+documentation = "https://github.com/golmman/term2d/blob/main/README.md"
 edition = "2021"
+homepage = "https://github.com/golmman/term2d"
+keywords = ["terminal", "2d", "raw mode"]
+license = "MIT License"
+license-file = "./LICENSE"
+name = "term2d"
+repository = "https://github.com/golmman/term2d"
+version = "0.1.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
