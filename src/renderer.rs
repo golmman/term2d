@@ -5,6 +5,7 @@ use crate::{
 };
 
 pub mod full_block_renderer;
+pub mod half_block_renderer;
 
 pub trait Renderer {
     fn init(&mut self, screen: DefaultScreen);

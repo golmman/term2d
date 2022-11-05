@@ -17,6 +17,15 @@ pub struct Pixel {
     pub color: Color,
 }
 
+impl Default for Pixel {
+    fn default() -> Self {
+        Self {
+            color: Color::default(),
+            ch: ' ',
+        }
+    }
+}
+
 impl From<char> for Pixel {
     fn from(ch: char) -> Self {
         Self {
@@ -49,7 +58,7 @@ impl DefaultScreen {
     pub fn clear(&mut self) {
         let buffer_size = (self.size.width() * self.size.height()) as usize;
         self.prelude_buffer = String::new();
-        self.pixel_buffer = vec![Pixel::from(' '); buffer_size];
+        self.pixel_buffer = vec![Pixel::default(); buffer_size];
     }
 
     pub fn draw_pixel(&mut self, p: Point, rgb: Rgb) {
@@ -83,6 +92,11 @@ impl DefaultScreen {
             };
             self.pixel_buffer[index + i] = Pixel { ch, color };
         }
+    }
+
+    pub fn get_color(&self, p: Point) -> Color {
+        let index = (self.size.width() * p.y + p.x) as usize;
+        self.pixel_buffer[index].color
     }
 
     pub fn display(&mut self) {
