@@ -10,40 +10,32 @@ use termion::input::TermRead;
 
 pub mod color;
 pub mod point;
+pub mod renderer;
 pub mod screen;
 
 pub type Key = termion::event::Key;
 
-#[derive(Clone, Debug)]
-pub enum BlockMode {
-    Full,
-    Half,
-}
-
-#[derive(Clone, Debug)]
+#[derive(Copy, Clone, Debug)]
 pub enum Event {
     Key(Key),
     Resize,
     Elapse,
 }
 
-pub struct Context {
-    pub event: Event,
-    pub screen: DefaultScreen,
-}
-
 pub struct Config {
-    pub block_mode: BlockMode,
     pub fps: u16,
 }
 
 pub trait Controller {
-    fn update(&mut self, context: &mut Context) -> bool;
+    fn update(&mut self, event: Event) -> bool;
     fn get_config(&self) -> Config;
+    fn init(&mut self, screen: DefaultScreen);
 }
 
-pub fn run<T: Controller>(mut controller: T) {
+pub fn run<C: Controller>(mut controller: C) {
     let screen = DefaultScreen::new();
+    controller.init(screen);
+
     let config = controller.get_config();
 
     let (sender, receiver) = sync_channel::<Event>(1024);
@@ -58,14 +50,9 @@ pub fn run<T: Controller>(mut controller: T) {
     thread::spawn(move || send_interrupt_events(interrupt_sender));
     thread::spawn(move || send_resize_events(resize_sender));
 
-    let mut context = Context {
-        event: Event::Resize,
-        screen,
-    };
-
     loop {
-        context.event = receiver.recv().unwrap();
-        if !controller.update(&mut context) {
+        let event = receiver.recv().unwrap();
+        if !controller.update(event) {
             break;
         }
     }

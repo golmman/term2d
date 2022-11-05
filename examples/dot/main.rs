@@ -1,14 +1,29 @@
 use term2d::{
-    color::{Color, Rgb},
+    color::Rgb,
     point::Point,
-    run, BlockMode, Event, Key,
+    renderer::{full_block_renderer::FullBlockRenderer, Renderer},
+    run,
+    screen::DefaultScreen,
+    Controller, Event, Key,
 };
 
-struct Controller {}
+struct DotController {
+    frame: u32,
+    renderer: FullBlockRenderer,
+}
 
-impl term2d::Controller for Controller {
-    fn update(&mut self, context: &mut term2d::Context) -> bool {
-        match context.event {
+impl DotController {
+    fn new() -> Self {
+        Self {
+            frame: 0,
+            renderer: FullBlockRenderer::new(),
+        }
+    }
+}
+
+impl Controller for DotController {
+    fn update(&mut self, event: Event) -> bool {
+        match event {
             Event::Key(key) => match key {
                 Key::Char('q') => return false,
                 Key::Ctrl('c') => return false,
@@ -18,22 +33,30 @@ impl term2d::Controller for Controller {
             Event::Elapse => {}
         }
 
-        context.screen.clear();
-        context.screen.draw_pixel(Point::new(5, 5), Rgb::red());
-        context.screen.display();
+        self.renderer.clear();
+        self.renderer.draw_text_transparent(
+            Point::new(0, 0),
+            Rgb::white(),
+            format!("press 'q' to quit, frame: {}", self.frame),
+        );
+        self.renderer.draw_pixel(Point::new(5, 5), Rgb::red());
+        self.renderer.display();
+
+        self.frame += 1;
 
         true
     }
 
     fn get_config(&self) -> term2d::Config {
-        term2d::Config {
-            block_mode: BlockMode::Full,
-            fps: 10,
-        }
+        term2d::Config { fps: 10 }
+    }
+
+    fn init(&mut self, screen: DefaultScreen) {
+        self.renderer.init(screen);
     }
 }
 
 fn main() {
-    let controller = Controller {};
+    let controller = DotController::new();
     run(controller);
 }

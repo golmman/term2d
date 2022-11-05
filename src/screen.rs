@@ -54,7 +54,10 @@ impl DefaultScreen {
 
     pub fn draw_pixel(&mut self, p: Point, rgb: Rgb) {
         let index = (self.size.width() * p.y + p.x) as usize;
-        let color = Color { fg: Rgb::black(), bg: rgb };
+        let color = Color {
+            fg: Rgb::black(),
+            bg: rgb,
+        };
         self.pixel_buffer[index] = Pixel { ch: ' ', color };
     }
 
