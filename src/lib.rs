@@ -15,6 +15,12 @@ pub mod screen;
 pub type Key = termion::event::Key;
 
 #[derive(Clone, Debug)]
+pub enum BlockMode {
+    Full,
+    Half,
+}
+
+#[derive(Clone, Debug)]
 pub enum Event {
     Key(Key),
     Resize,
@@ -27,6 +33,7 @@ pub struct Context {
 }
 
 pub struct Config {
+    pub block_mode: BlockMode,
     pub fps: u16,
 }
 

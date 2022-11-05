@@ -1,10 +1,7 @@
 use term2d::{
-    add,
     color::{Color, Rgb},
     point::Point,
-    run,
-    screen::DefaultScreen,
-    Event, Key,
+    run, BlockMode, Event, Key,
 };
 
 struct Controller {}
@@ -22,20 +19,17 @@ impl term2d::Controller for Controller {
         }
 
         context.screen.clear();
-        context.screen.draw_pixel(
-            Point::new(5, 5),
-            Color {
-                bg: Rgb::red(),
-                fg: Rgb::black(),
-            },
-        );
+        context.screen.draw_pixel(Point::new(5, 5), Rgb::red());
         context.screen.display();
 
         true
     }
 
     fn get_config(&self) -> term2d::Config {
-        term2d::Config { fps: 10 }
+        term2d::Config {
+            block_mode: BlockMode::Full,
+            fps: 10,
+        }
     }
 }
 
