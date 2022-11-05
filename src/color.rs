@@ -24,6 +24,18 @@ impl Default for Rgb {
 }
 
 impl Rgb {
+    pub fn black() -> Self {
+        Self { r: 0, g: 0, b: 0 }
+    }
+
+    pub fn white() -> Self {
+        Self {
+            r: 255,
+            g: 255,
+            b: 255,
+        }
+    }
+
     pub fn red() -> Self {
         Self { r: 255, g: 0, b: 0 }
     }
@@ -137,33 +149,5 @@ impl From<&Color> for String {
 impl Display for Color {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", String::from(self))
-    }
-}
-
-#[cfg(test)]
-mod test {
-    use super::*;
-
-    #[test]
-    fn it_parses_bright_red_color_from_hex_code() {
-        let Rgb { r, g, b } = Rgb::parse("#ff0000").unwrap();
-        assert_eq!(r, 255);
-        assert_eq!(g, 0);
-        assert_eq!(b, 0);
-    }
-
-    #[test]
-    fn it_parses_test_color_from_hex_code() {
-        let Rgb { r, g, b } = Rgb::parse("#010203").unwrap();
-        assert_eq!(r, 1);
-        assert_eq!(g, 2);
-        assert_eq!(b, 3);
-    }
-
-    #[test]
-    fn it_fails_when_the_rgb_hex_code_is_invalid() {
-        let err = Rgb::parse("nonsense");
-        assert!(err.is_err());
-        assert_eq!(err.unwrap_err().kind(), ErrorKind::InvalidValue);
     }
 }
