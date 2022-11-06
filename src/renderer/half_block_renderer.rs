@@ -24,7 +24,8 @@ impl Renderer for HalfBlockRenderer {
     }
 
     fn resize(&mut self) -> Point {
-        self.screen.as_mut().unwrap().resize()
+        let screen_size = self.screen.as_mut().unwrap().resize();
+        Point::new(screen_size.width(), screen_size.height() * 2)
     }
 
     fn clear(&mut self) {
@@ -56,18 +57,21 @@ impl Renderer for HalfBlockRenderer {
     }
 
     fn draw_char(&mut self, p: Point, color: Color, ch: char) {
-        self.screen.as_mut().unwrap().draw_char(p, color, ch);
+        let scaled_point = Point::new(p.x, p.y / 2);
+        self.screen.as_mut().unwrap().draw_char(scaled_point, color, ch);
     }
 
     fn draw_text(&mut self, p: Point, color: Color, text: String) {
-        self.screen.as_mut().unwrap().draw_text(p, color, text);
+        let scaled_point = Point::new(p.x, p.y / 2);
+        self.screen.as_mut().unwrap().draw_text(scaled_point, color, text);
     }
 
     fn draw_text_transparent(&mut self, p: Point, fg_color: Rgb, text: String) {
+        let scaled_point = Point::new(p.x, p.y / 2);
         self.screen
             .as_mut()
             .unwrap()
-            .draw_text_transparent(p, fg_color, text);
+            .draw_text_transparent(scaled_point, fg_color, text);
     }
 
     fn display(&mut self) {
