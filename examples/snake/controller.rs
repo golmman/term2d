@@ -27,10 +27,18 @@ impl Controller for SnakeController {
             Event::Key(key) => match key {
                 Key::Char('q') => return false,
                 Key::Ctrl('c') => return false,
+
+                Key::Char('r') => self.state.reset(),
+
+                Key::Char('w') | Key::Char('k') => self.state.go_up(),
+                Key::Char('s') | Key::Char('j') => self.state.go_down(),
+                Key::Char('a') | Key::Char('h') => self.state.go_left(),
+                Key::Char('d') | Key::Char('l') => self.state.go_right(),
+
                 _ => {}
             },
             Event::Resize => self.resize(),
-            Event::Elapse => {}
+            Event::Elapse => self.state.update(),
         }
 
         self.renderer.display(&self.state);

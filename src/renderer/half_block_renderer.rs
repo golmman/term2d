@@ -58,12 +58,18 @@ impl Renderer for HalfBlockRenderer {
 
     fn draw_char(&mut self, p: Point, color: Color, ch: char) {
         let scaled_point = Point::new(p.x, p.y / 2);
-        self.screen.as_mut().unwrap().draw_char(scaled_point, color, ch);
+        self.screen
+            .as_mut()
+            .unwrap()
+            .draw_char(scaled_point, color, ch);
     }
 
     fn draw_text(&mut self, p: Point, color: Color, text: String) {
         let scaled_point = Point::new(p.x, p.y / 2);
-        self.screen.as_mut().unwrap().draw_text(scaled_point, color, text);
+        self.screen
+            .as_mut()
+            .unwrap()
+            .draw_text(scaled_point, color, text);
     }
 
     fn draw_text_transparent(&mut self, p: Point, fg_color: Rgb, text: String) {
