@@ -32,28 +32,18 @@ impl SnakeRenderer {
         self.draw_frame(state);
         self.draw_snake(state);
         self.draw_food(state);
+        self.draw_info(state);
         self.draw_game_over(state);
 
+        self.renderer.display();
+    }
+
+    fn draw_info(&mut self, state: &State) {
         self.renderer.draw_text_transparent(
             Point::new(2, 2),
             Rgb::white(),
-            format!(
-                "press 'q' to quit, screen_size: ({}, {}), frame: {}",
-                state.screen_size.width(),
-                state.screen_size.height(),
-                state.frame
-            ),
+            format!("press 'q' to quit, snake length: {}", state.snake.len(),),
         );
-
-        //self.renderer.draw_pixel(Point::new(0, 0), Rgb::red());
-        //self.renderer.draw_pixel(Point::new(1, 1), Rgb::red());
-        //self.renderer.draw_pixel(Point::new(2, 2), Rgb::red());
-        //self.renderer.draw_pixel(Point::new(3, 3), Rgb::red());
-        //self.renderer.draw_pixel(Point::new(4, 4), Rgb::red());
-        //self.renderer.draw_pixel(Point::new(5, 5), Rgb::red());
-        //self.renderer.draw_pixel(Point::new(6, 6), Rgb::red());
-
-        self.renderer.display();
     }
 
     fn draw_food(&mut self, state: &State) {

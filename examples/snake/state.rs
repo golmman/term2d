@@ -76,6 +76,12 @@ impl State {
             }
         }
 
+        if head == self.food {
+            let tail_index = self.snake.len() - 1;
+            self.snake.push(self.snake[tail_index].clone());
+            self.reset_food();
+        }
+
         for i in 1..self.snake.len() {
             let j = self.snake.len() - i;
             self.snake[j] = self.snake[j - 1].clone();

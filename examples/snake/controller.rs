@@ -30,10 +30,10 @@ impl Controller for SnakeController {
 
                 Key::Char('r') => self.state.reset(),
 
-                Key::Char('w') | Key::Char('k') => self.state.go_up(),
-                Key::Char('s') | Key::Char('j') => self.state.go_down(),
-                Key::Char('a') | Key::Char('h') => self.state.go_left(),
-                Key::Char('d') | Key::Char('l') => self.state.go_right(),
+                Key::Char('w') | Key::Char('k') | Key::Up => self.state.go_up(),
+                Key::Char('s') | Key::Char('j') | Key::Down => self.state.go_down(),
+                Key::Char('a') | Key::Char('h') | Key::Left => self.state.go_left(),
+                Key::Char('d') | Key::Char('l') | Key::Right => self.state.go_right(),
 
                 _ => {}
             },
