@@ -7,7 +7,7 @@ pub struct State {
     pub frame: u32,
     pub game_over: bool,
     pub screen_size: Point,
-    pub snake: Vec<Point>,
+    pub snake: Vec<Point>, // the snake head defined to be is the last array element
 
     boundary: (Point, Point),
     direction: Point,
@@ -54,9 +54,10 @@ impl State {
             return;
         }
 
+        let head_index = self.snake.len() - 1;
         let head = Point::new(
-            self.snake[0].x + self.direction.x,
-            self.snake[0].y + self.direction.y,
+            self.snake[head_index].x + self.direction.x,
+            self.snake[head_index].y + self.direction.y,
         );
 
         if !(self.boundary.0.x..self.boundary.1.x).contains(&head.x) {
@@ -69,19 +70,18 @@ impl State {
             return;
         }
 
-        for i in 3..self.snake.len() {
+        for i in 0..self.snake.len() - 3 {
             if head == self.snake[i] {
                 self.game_over = true;
                 return;
             }
         }
 
-        for i in 1..self.snake.len() {
-            let j = self.snake.len() - i;
-            self.snake[j] = self.snake[j - 1].clone();
+        for i in 0..self.snake.len() - 1 {
+            self.snake[i] = self.snake[i + 1].clone();
         }
 
-        self.snake[0] = head;
+        self.snake[head_index] = head;
     }
 
     pub fn go_up(&mut self) {
@@ -127,14 +127,13 @@ impl State {
     fn reset_snake(&mut self) {
         const SNAKE_START_LENGTH: i32 = 5;
 
-        let start_x = (self.boundary.1.x - self.boundary.0.x) / 3
-            + self.boundary.0.x
-            + SNAKE_START_LENGTH / 2;
+        let start_x = (self.boundary.1.x - self.boundary.0.x) / 3 + self.boundary.0.x
+            - SNAKE_START_LENGTH / 2;
         let start_y = (self.boundary.1.y - self.boundary.0.y) / 2 + self.boundary.0.y;
 
         self.snake = Vec::new();
         for i in 0..SNAKE_START_LENGTH {
-            self.snake.push(Point::new(start_x - i, start_y));
+            self.snake.push(Point::new(start_x + i, start_y));
         }
 
         self.direction = Point::new(1, 0);

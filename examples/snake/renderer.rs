@@ -66,14 +66,14 @@ impl SnakeRenderer {
         }
 
         self.renderer.draw_pixel(
-            state.snake[0].clone(),
+            state.snake[state.snake.len() - 1].clone(),
             Rgb {
                 r: 32,
                 g: 128,
                 b: 32,
             },
         );
-        for i in 1..state.snake.len() {
+        for i in 0..state.snake.len() - 1 {
             self.renderer.draw_pixel(
                 state.snake[i].clone(),
                 Rgb {
