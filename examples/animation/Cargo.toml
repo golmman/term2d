@@ -1,0 +1,9 @@
+[package]
+name = "animation"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+term2d = { path = "../../term2d/" }
+image = "0.24.2"
