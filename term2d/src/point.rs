@@ -75,6 +75,21 @@ impl std::fmt::Debug for Point {
     }
 }
 
+impl From<(i32, i32)> for Point {
+    fn from(p: (i32, i32)) -> Self {
+        Self {
+            x: p.0,
+            y: p.1,
+        }
+    }
+}
+
+impl From<(u32, u32)> for Point {
+    fn from(p: (u32, u32)) -> Self {
+        Self::from((p.0 as i32, p.1 as i32))
+    }
+}
+
 impl Add for Point {
     type Output = Point;
 

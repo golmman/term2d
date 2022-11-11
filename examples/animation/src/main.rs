@@ -1,5 +1,5 @@
 use image::codecs::gif::GifDecoder;
-use image::{AnimationDecoder, ImageDecoder};
+use image::AnimationDecoder;
 use std::fs::File;
 
 use term2d::{
@@ -48,7 +48,10 @@ impl Controller for DotController {
         self.renderer.draw_text_transparent(
             Point::new(2, 0),
             Rgb::white(),
-            format!("press 'q' to quit, frame: {}, {:?}", self.frame, self.gif[0].size),
+            format!(
+                "press 'q' to quit, frame: {}, {:?}",
+                self.frame, self.gif[0].size
+            ),
         );
 
         let gif_x = 2;
@@ -58,10 +61,10 @@ impl Controller for DotController {
             for x in 0..image.size.width() {
                 let index = (x + y * image.size.width()) as usize;
                 let rgb = image.pixels[index];
-                self.renderer.draw_pixel(Point::new(gif_x + x, gif_y + y), rgb);
+                self.renderer
+                    .draw_pixel(Point::new(gif_x + x, gif_y + y), rgb);
             }
         }
-
 
         self.renderer.display();
 
@@ -89,14 +92,14 @@ fn load_gif() -> Vec<Image> {
     let mut gif = Vec::new();
 
     let file_in = File::open("examples/animation/data/walk.gif").unwrap();
-    let mut decoder = GifDecoder::new(file_in).unwrap();
+    let decoder = GifDecoder::new(file_in).unwrap();
     let frames = decoder.into_frames();
     let frames = frames.collect_frames().unwrap();
 
     for frame in frames {
         let img = frame.buffer();
         let mut image = Image {
-            size: Point::new(img.dimensions().0 as i32, img.dimensions().1 as i32),
+            size: Point::from(img.dimensions()),
             pixels: Vec::new(),
         };
 
@@ -105,9 +108,13 @@ fn load_gif() -> Vec<Image> {
                 let image::Rgba([r, g, b, a]) = img.get_pixel(x, y);
 
                 if *a == 0 {
-                    image.pixels.push(Rgb::red());
+                    image.pixels.push(Rgb { r: 96, g: 96, b: 96 });
                 } else {
-                    image.pixels.push(Rgb { r: *r, g: *g, b: *b });
+                    image.pixels.push(Rgb {
+                        r: *r,
+                        g: *g,
+                        b: *b,
+                    });
                 }
             }
         }
