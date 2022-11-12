@@ -1,22 +1,22 @@
 use term2d::{
     color::Rgba,
     point::Point,
-    renderer::{full_block_renderer::FullBlockRenderer, Renderer},
+    renderer::{half_block_renderer::HalfBlockRenderer, Renderer},
     run,
     screen::DefaultScreen,
-    Controller, Event, Key,
+    Controller, Event, Key, rect::Rect,
 };
 
 struct DotController {
     frame: u32,
-    renderer: FullBlockRenderer,
+    renderer: HalfBlockRenderer,
 }
 
 impl DotController {
     fn new() -> Self {
         Self {
             frame: 0,
-            renderer: FullBlockRenderer::new(),
+            renderer: HalfBlockRenderer::new(),
         }
     }
 }
@@ -39,13 +39,11 @@ impl Controller for DotController {
             Rgba::white(),
             format!("press 'q' to quit, frame: {}", self.frame),
         );
-        self.renderer.draw_pixel(Point::new(0, 0), Rgba::red());
-        self.renderer.draw_pixel(Point::new(1, 1), Rgba::red());
-        self.renderer.draw_pixel(Point::new(2, 2), Rgba::red());
-        self.renderer.draw_pixel(Point::new(3, 3), Rgba::red());
-        self.renderer.draw_pixel(Point::new(4, 4), Rgba::red());
-        self.renderer.draw_pixel(Point::new(5, 5), Rgba::red());
-        self.renderer.draw_pixel(Point::new(6, 6), Rgba::red());
+
+        self.renderer.draw_rect(Rect::new(3, 3, 15, 10), Rgba::red());
+        self.renderer.draw_rect(Rect::new(12, 5, 15, 10), Rgba::green());
+        self.renderer.draw_rect(Rect::new(8, 8, 10, 15), Rgba::blue());
+
         self.renderer.display();
 
         self.frame += 1;

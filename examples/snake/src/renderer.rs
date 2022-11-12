@@ -1,5 +1,5 @@
 use term2d::{
-    color::{Color, Rgb},
+    color::{Color, Rgba},
     point::Point,
     renderer::{half_block_renderer::HalfBlockRenderer, Renderer},
     screen::DefaultScreen,
@@ -41,13 +41,13 @@ impl SnakeRenderer {
     fn draw_info(&mut self, state: &State) {
         self.renderer.draw_text_transparent(
             Point::new(2, 2),
-            Rgb::white(),
+            Rgba::white(),
             format!("press 'q' to quit, snake length: {}", state.snake.len(),),
         );
     }
 
     fn draw_food(&mut self, state: &State) {
-        self.renderer.draw_pixel(state.food.clone(), Rgb::red());
+        self.renderer.draw_pixel(state.food.clone(), Rgba::red());
     }
 
     fn draw_snake(&mut self, state: &State) {
@@ -57,7 +57,7 @@ impl SnakeRenderer {
 
         self.renderer.draw_pixel(
             state.snake[0].clone(),
-            Rgb {
+            Rgba {
                 r: 32,
                 g: 128,
                 b: 32,
@@ -66,7 +66,7 @@ impl SnakeRenderer {
         for i in 1..state.snake.len() {
             self.renderer.draw_pixel(
                 state.snake[i].clone(),
-                Rgb {
+                Rgba {
                     r: 64,
                     g: 192,
                     b: 64,
@@ -87,12 +87,12 @@ impl SnakeRenderer {
         let x = state.screen_size.width() / 2 - LEN / 2;
         let y = state.screen_size.height() / 2 - 2;
         let color = Color {
-            fg: Rgb {
+            fg: Rgba {
                 r: 16,
                 g: 16,
                 b: 16,
             },
-            bg: Rgb {
+            bg: Rgba {
                 r: 192,
                 g: 192,
                 b: 192,

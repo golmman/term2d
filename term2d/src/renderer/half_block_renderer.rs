@@ -1,7 +1,7 @@
 use crate::{
-    color::{Color, Rgb},
+    color::{Color, Rgba},
     point::Point,
-    screen::DefaultScreen,
+    screen::DefaultScreen, rect::Rect,
 };
 
 use super::Renderer;
@@ -32,7 +32,7 @@ impl Renderer for HalfBlockRenderer {
         self.screen.as_mut().unwrap().clear();
     }
 
-    fn draw_pixel(&mut self, p: Point, rgb: Rgb) {
+    fn draw_pixel(&mut self, p: Point, rgb: Rgba) {
         let x = p.x;
         let y = p.y / 2;
 
@@ -72,7 +72,7 @@ impl Renderer for HalfBlockRenderer {
             .draw_text(scaled_point, color, text);
     }
 
-    fn draw_text_transparent(&mut self, p: Point, fg_color: Rgb, text: String) {
+    fn draw_text_transparent(&mut self, p: Point, fg_color: Rgba, text: String) {
         let scaled_point = Point::new(p.x, p.y / 2);
         self.screen
             .as_mut()
@@ -82,5 +82,20 @@ impl Renderer for HalfBlockRenderer {
 
     fn display(&mut self) {
         self.screen.as_mut().unwrap().display();
+    }
+}
+
+impl HalfBlockRenderer {
+    pub fn draw_rect(&mut self, r: Rect, c: Rgba) {
+        let x0 = r.pos.x;
+        let x1 = x0 + r.size.width();
+        let y0 = r.pos.y;
+        let y1 = y0 + r.size.height();
+
+        for y in y0..y1 {
+            for x in x0..x1 {
+                self.draw_pixel(Point::new(x, y), c);
+            }
+        }
     }
 }

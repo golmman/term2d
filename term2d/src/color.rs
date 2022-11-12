@@ -11,19 +11,19 @@ use std::{
 };
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-pub struct Rgb {
+pub struct Rgba {
     pub r: u8,
     pub g: u8,
     pub b: u8,
 }
 
-impl Default for Rgb {
+impl Default for Rgba {
     fn default() -> Self {
         Self { r: 0, g: 0, b: 0 }
     }
 }
 
-impl Rgb {
+impl Rgba {
     pub fn black() -> Self {
         Self { r: 0, g: 0, b: 0 }
     }
@@ -72,18 +72,18 @@ impl Rgb {
         }
     }
 
-    pub fn blend(&self, other: &Rgb, alpha: u8) -> Rgb {
+    pub fn blend(&self, other: &Rgba, alpha: u8) -> Rgba {
         let a = alpha as i32;
         let r = ((a * self.r as i32 + (255 - a) * other.r as i32) / 255) as u8;
         let g = ((a * self.g as i32 + (255 - a) * other.g as i32) / 255) as u8;
         let b = ((a * self.b as i32 + (255 - a) * other.b as i32) / 255) as u8;
-        Rgb { r, g, b }
+        Rgba { r, g, b }
     }
 
-    pub fn fade(&mut self, target: &Rgb, fading_speed: i32) {
-        let f_r = Rgb::calc_real_fading_speed(fading_speed, target.r as i32 - self.r as i32);
-        let f_g = Rgb::calc_real_fading_speed(fading_speed, target.g as i32 - self.g as i32);
-        let f_b = Rgb::calc_real_fading_speed(fading_speed, target.b as i32 - self.b as i32);
+    pub fn fade(&mut self, target: &Rgba, fading_speed: i32) {
+        let f_r = Rgba::calc_real_fading_speed(fading_speed, target.r as i32 - self.r as i32);
+        let f_g = Rgba::calc_real_fading_speed(fading_speed, target.g as i32 - self.g as i32);
+        let f_b = Rgba::calc_real_fading_speed(fading_speed, target.b as i32 - self.b as i32);
         self.r = (self.r as i32 + f_r) as u8;
         self.g = (self.g as i32 + f_g) as u8;
         self.b = (self.b as i32 + f_b) as u8;
@@ -102,8 +102,8 @@ impl Rgb {
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct Color {
-    pub bg: Rgb,
-    pub fg: Rgb,
+    pub bg: Rgba,
+    pub fg: Rgba,
 }
 
 impl Default for Color {
@@ -120,8 +120,8 @@ impl Color {
 
     pub fn text() -> Self {
         Self {
-            bg: Rgb::default(),
-            fg: Rgb {
+            bg: Rgba::default(),
+            fg: Rgba {
                 r: 200,
                 g: 200,
                 b: 200,
@@ -132,12 +132,12 @@ impl Color {
 
 impl From<&Color> for String {
     fn from(color: &Color) -> Self {
-        let Rgb {
+        let Rgba {
             r: fg_r,
             g: fg_g,
             b: fg_b,
         } = color.fg;
-        let Rgb {
+        let Rgba {
             r: bg_r,
             g: bg_g,
             b: bg_b,

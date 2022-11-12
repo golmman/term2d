@@ -6,7 +6,7 @@ use termion::raw::IntoRawMode;
 use termion::raw::RawTerminal;
 
 use crate::color::Color;
-use crate::color::Rgb;
+use crate::color::Rgba;
 use crate::point::Point;
 
 pub type DefaultScreen = Screen<RawTerminal<Stdout>>;
@@ -61,10 +61,10 @@ impl DefaultScreen {
         self.pixel_buffer = vec![Pixel::default(); buffer_size];
     }
 
-    pub fn draw_pixel(&mut self, p: Point, rgb: Rgb) {
+    pub fn draw_pixel(&mut self, p: Point, rgb: Rgba) {
         let index = (self.size.width() * p.y + p.x) as usize;
         let color = Color {
-            fg: Rgb::black(),
+            fg: Rgba::black(),
             bg: rgb,
         };
         self.pixel_buffer[index] = Pixel { ch: ' ', color };
@@ -83,7 +83,7 @@ impl DefaultScreen {
         }
     }
 
-    pub fn draw_text_transparent(&mut self, p: Point, fg_color: Rgb, text: String) {
+    pub fn draw_text_transparent(&mut self, p: Point, fg_color: Rgba, text: String) {
         let index = (self.size.width() * p.y + p.x) as usize;
         for (i, ch) in text.chars().enumerate() {
             let color = Color {

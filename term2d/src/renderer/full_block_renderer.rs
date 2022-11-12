@@ -25,7 +25,7 @@ impl Renderer for FullBlockRenderer {
         self.screen.as_mut().unwrap().clear();
     }
 
-    fn draw_pixel(&mut self, p: crate::point::Point, rgb: crate::color::Rgb) {
+    fn draw_pixel(&mut self, p: crate::point::Point, rgb: crate::color::Rgba) {
         self.screen.as_mut().unwrap().draw_pixel(p, rgb);
     }
 
@@ -40,7 +40,7 @@ impl Renderer for FullBlockRenderer {
     fn draw_text_transparent(
         &mut self,
         p: crate::point::Point,
-        fg_color: crate::color::Rgb,
+        fg_color: crate::color::Rgba,
         text: String,
     ) {
         self.screen

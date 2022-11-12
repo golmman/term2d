@@ -3,7 +3,7 @@ use image::AnimationDecoder;
 use std::fs::File;
 
 use term2d::{
-    color::Rgb,
+    color::Rgba,
     point::Point,
     renderer::{half_block_renderer::HalfBlockRenderer, Renderer},
     run,
@@ -13,7 +13,7 @@ use term2d::{
 
 struct Image {
     size: Point,
-    pixels: Vec<Rgb>,
+    pixels: Vec<Rgba>,
 }
 
 struct DotController {
@@ -47,7 +47,7 @@ impl Controller for DotController {
         self.renderer.clear();
         self.renderer.draw_text_transparent(
             Point::new(2, 0),
-            Rgb::white(),
+            Rgba::white(),
             format!(
                 "press 'q' to quit, frame: {}, {:?}",
                 self.frame, self.gif[0].size
@@ -108,9 +108,9 @@ fn load_gif() -> Vec<Image> {
                 let image::Rgba([r, g, b, a]) = img.get_pixel(x, y);
 
                 if *a == 0 {
-                    image.pixels.push(Rgb { r: 96, g: 96, b: 96 });
+                    image.pixels.push(Rgba { r: 96, g: 96, b: 96 });
                 } else {
-                    image.pixels.push(Rgb {
+                    image.pixels.push(Rgba {
                         r: *r,
                         g: *g,
                         b: *b,
