@@ -61,6 +61,7 @@ impl SnakeRenderer {
                 r: 32,
                 g: 128,
                 b: 32,
+                a: 255,
             },
         );
         for i in 1..state.snake.len() {
@@ -70,6 +71,7 @@ impl SnakeRenderer {
                     r: 64,
                     g: 192,
                     b: 64,
+                    a: 255,
                 },
             );
         }
@@ -91,11 +93,13 @@ impl SnakeRenderer {
                 r: 16,
                 g: 16,
                 b: 16,
+                a: 255,
             },
             bg: Rgba {
                 r: 192,
                 g: 192,
                 b: 192,
+                a: 255,
             },
         };
 

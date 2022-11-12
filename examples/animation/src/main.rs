@@ -108,12 +108,18 @@ fn load_gif() -> Vec<Image> {
                 let image::Rgba([r, g, b, a]) = img.get_pixel(x, y);
 
                 if *a == 0 {
-                    image.pixels.push(Rgba { r: 96, g: 96, b: 96 });
+                    image.pixels.push(Rgba {
+                        r: 96,
+                        g: 96,
+                        b: 96,
+                        a: 255,
+                    });
                 } else {
                     image.pixels.push(Rgba {
                         r: *r,
                         g: *g,
                         b: *b,
+                        a: 255,
                     });
                 }
             }

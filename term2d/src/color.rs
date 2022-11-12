@@ -15,17 +15,28 @@ pub struct Rgba {
     pub r: u8,
     pub g: u8,
     pub b: u8,
+    pub a: u8,
 }
 
 impl Default for Rgba {
     fn default() -> Self {
-        Self { r: 0, g: 0, b: 0 }
+        Self {
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0,
+        }
     }
 }
 
 impl Rgba {
     pub fn black() -> Self {
-        Self { r: 0, g: 0, b: 0 }
+        Self {
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 255,
+        }
     }
 
     pub fn white() -> Self {
@@ -33,19 +44,35 @@ impl Rgba {
             r: 255,
             g: 255,
             b: 255,
+            a: 255,
         }
     }
 
     pub fn red() -> Self {
-        Self { r: 255, g: 0, b: 0 }
+        Self {
+            r: 255,
+            g: 0,
+            b: 0,
+            a: 255,
+        }
     }
 
     pub fn green() -> Self {
-        Self { r: 0, g: 255, b: 0 }
+        Self {
+            r: 0,
+            g: 255,
+            b: 0,
+            a: 255,
+        }
     }
 
     pub fn blue() -> Self {
-        Self { r: 0, g: 0, b: 255 }
+        Self {
+            r: 0,
+            g: 0,
+            b: 255,
+            a: 255,
+        }
     }
 
     pub fn yellow() -> Self {
@@ -53,6 +80,7 @@ impl Rgba {
             r: 255,
             g: 255,
             b: 0,
+            a: 255,
         }
     }
 
@@ -61,6 +89,7 @@ impl Rgba {
             r: 0,
             g: 255,
             b: 255,
+            a: 255,
         }
     }
 
@@ -69,15 +98,16 @@ impl Rgba {
             r: 255,
             g: 0,
             b: 255,
+            a: 255,
         }
     }
 
-    pub fn blend(&self, other: &Rgba, alpha: u8) -> Rgba {
-        let a = alpha as i32;
+    pub fn blend(&self, other: &Rgba) -> Rgba {
+        let a = self.a as i32;
         let r = ((a * self.r as i32 + (255 - a) * other.r as i32) / 255) as u8;
         let g = ((a * self.g as i32 + (255 - a) * other.g as i32) / 255) as u8;
         let b = ((a * self.b as i32 + (255 - a) * other.b as i32) / 255) as u8;
-        Rgba { r, g, b }
+        Rgba { r, g, b, a: 255 }
     }
 
     pub fn fade(&mut self, target: &Rgba, fading_speed: i32) {
@@ -125,6 +155,7 @@ impl Color {
                 r: 200,
                 g: 200,
                 b: 200,
+                a: 255,
             },
         }
     }
@@ -136,11 +167,13 @@ impl From<&Color> for String {
             r: fg_r,
             g: fg_g,
             b: fg_b,
+            a: _,
         } = color.fg;
         let Rgba {
             r: bg_r,
             g: bg_g,
             b: bg_b,
+            a: _,
         } = color.bg;
         format!("\x1b[38;2;{fg_r};{fg_g};{fg_b};48;2;{bg_r};{bg_g};{bg_b}m")
     }
