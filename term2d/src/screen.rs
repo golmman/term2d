@@ -20,7 +20,7 @@ pub struct Pixel {
 impl Default for Pixel {
     fn default() -> Self {
         Self {
-            color: Color::default(),
+            color: Default::default(),
             ch: ' ',
         }
     }
@@ -63,23 +63,48 @@ impl DefaultScreen {
 
     pub fn draw_pixel(&mut self, p: Point, rgb: Rgba) {
         let index = (self.size.width() * p.y + p.x) as usize;
-        let color = Color {
+
+        let old_rgba = &self.pixel_buffer[index].color.bg;
+        let new_rgba = rgb.blend(old_rgba);
+
+        let new_color = Color {
             fg: Rgba::black(),
-            bg: rgb,
+            bg: new_rgba,
         };
-        self.pixel_buffer[index] = Pixel { ch: ' ', color };
+
+        self.pixel_buffer[index] = Pixel {
+            ch: ' ',
+            color: new_color,
+        };
     }
 
     pub fn draw_char(&mut self, p: Point, color: Color, ch: char) {
         let index = (self.size.width() * p.y + p.x) as usize;
-        self.pixel_buffer[index] = Pixel { ch, color };
+
+        let old_bg = &self.pixel_buffer[index].color.bg;
+        let new_bg = color.bg.blend(old_bg);
+        let old_fg = &self.pixel_buffer[index].color.fg;
+        let new_fg = color.fg.blend(old_fg);
+
+        let new_color = Color {
+            bg: new_bg,
+            fg: new_fg,
+        };
+
+        self.pixel_buffer[index] = Pixel {
+            ch,
+            color: new_color,
+        };
     }
 
     pub fn draw_text(&mut self, p: Point, color: Color, text: String) {
         let index = (self.size.width() * p.y + p.x) as usize;
 
         for (i, ch) in text.chars().enumerate() {
-            self.pixel_buffer[index + i] = Pixel { ch, color };
+            self.pixel_buffer[index + i] = Pixel {
+                ch,
+                color: color.clone(),
+            };
         }
     }
 
@@ -87,8 +112,8 @@ impl DefaultScreen {
         let index = (self.size.width() * p.y + p.x) as usize;
         for (i, ch) in text.chars().enumerate() {
             let color = Color {
-                bg: self.pixel_buffer[index + i].color.bg,
-                fg: fg_color,
+                bg: self.pixel_buffer[index + i].color.bg.clone(),
+                fg: fg_color.clone(),
             };
             self.pixel_buffer[index + i] = Pixel { ch, color };
         }
@@ -96,7 +121,7 @@ impl DefaultScreen {
 
     pub fn get_color(&self, p: Point) -> Color {
         let index = (self.size.width() * p.y + p.x) as usize;
-        self.pixel_buffer[index].color
+        self.pixel_buffer[index].color.clone()
     }
 
     pub fn display(&mut self) {
@@ -112,11 +137,11 @@ impl DefaultScreen {
 
             while x < self.size.width() {
                 let mut i = (self.size.width() * y + x) as usize;
-                let mut last_color = self.pixel_buffer[i].color;
+                let mut last_color = &self.pixel_buffer[i].color;
                 s.push_str(&format!("{last_color}"));
 
-                while x < self.size.width() && last_color == self.pixel_buffer[i].color {
-                    last_color = self.pixel_buffer[i].color;
+                while x < self.size.width() && *last_color == self.pixel_buffer[i].color {
+                    last_color = &self.pixel_buffer[i].color;
                     s.push(self.pixel_buffer[i].ch);
 
                     x += 1;

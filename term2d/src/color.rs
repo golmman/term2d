@@ -10,7 +10,7 @@ use std::{
     fmt::Display,
 };
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Rgba {
     pub r: u8,
     pub g: u8,
@@ -24,7 +24,7 @@ impl Default for Rgba {
             r: 0,
             g: 0,
             b: 0,
-            a: 0,
+            a: 255,
         }
     }
 }
@@ -103,6 +103,14 @@ impl Rgba {
     }
 
     pub fn blend(&self, other: &Rgba) -> Rgba {
+        if self.a == 0 {
+            return other.clone();
+        }
+
+        if self.a == 255 {
+            return self.clone();
+        }
+
         let a = self.a as i32;
         let r = ((a * self.r as i32 + (255 - a) * other.r as i32) / 255) as u8;
         let g = ((a * self.g as i32 + (255 - a) * other.g as i32) / 255) as u8;
@@ -130,7 +138,7 @@ impl Rgba {
     }
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Debug, PartialEq)]
 pub struct Color {
     pub bg: Rgba,
     pub fg: Rgba,

@@ -1,10 +1,11 @@
 use term2d::{
     color::Rgba,
     point::Point,
+    rect::Rect,
     renderer::{half_block_renderer::HalfBlockRenderer, Renderer},
     run,
     screen::DefaultScreen,
-    Controller, Event, Key, rect::Rect,
+    Controller, Event, Key,
 };
 
 struct DotController {
@@ -40,9 +41,33 @@ impl Controller for DotController {
             format!("press 'q' to quit, frame: {}", self.frame),
         );
 
-        self.renderer.draw_rect(Rect::new(3, 3, 15, 10), Rgba::red());
-        self.renderer.draw_rect(Rect::new(12, 5, 15, 10), Rgba::green());
-        self.renderer.draw_rect(Rect::new(8, 8, 10, 15), Rgba::blue());
+        self.renderer.draw_rect(
+            Rect::new(3, 3, 15, 10),
+            Rgba {
+                r: 255,
+                g: 0,
+                b: 0,
+                a: 255,
+            },
+        );
+        self.renderer.draw_rect(
+            Rect::new(12, 5, 15, 10),
+            Rgba {
+                r: 0,
+                g: 255,
+                b: 0,
+                a: 128,
+            },
+        );
+        self.renderer.draw_rect(
+            Rect::new(8, 8, 15, 15),
+            Rgba {
+                r: 0,
+                g: 0,
+                b: 255,
+                a: 128,
+            },
+        );
 
         self.renderer.display();
 

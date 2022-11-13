@@ -104,9 +104,9 @@ impl SnakeRenderer {
         };
 
         self.renderer
-            .draw_text(Point::new(x, y), color, LINE_1.to_string());
+            .draw_text(Point::new(x, y), color.clone(), LINE_1.to_string());
         self.renderer
-            .draw_text(Point::new(x, y + 2), color, LINE_2.to_string());
+            .draw_text(Point::new(x, y + 2), color.clone(), LINE_2.to_string());
     }
 
     fn draw_frame(&mut self, state: &State) {

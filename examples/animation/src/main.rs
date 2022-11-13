@@ -5,6 +5,7 @@ use std::fs::File;
 use term2d::{
     color::Rgba,
     point::Point,
+    rect::Rect,
     renderer::{half_block_renderer::HalfBlockRenderer, Renderer},
     run,
     screen::DefaultScreen,
@@ -54,13 +55,23 @@ impl Controller for DotController {
             ),
         );
 
+        self.renderer.draw_rect(
+            Rect::new(2, 2, 20, 20),
+            Rgba {
+                r: 96,
+                g: 96,
+                b: 96,
+                a: 255,
+            },
+        );
+
         let gif_x = 2;
         let gif_y = 3;
         let image = &self.gif[self.frame as usize % self.gif.len()];
         for y in 0..image.size.height() {
             for x in 0..image.size.width() {
                 let index = (x + y * image.size.width()) as usize;
-                let rgb = image.pixels[index];
+                let rgb = image.pixels[index].clone();
                 self.renderer
                     .draw_pixel(Point::new(gif_x + x, gif_y + y), rgb);
             }
@@ -105,23 +116,8 @@ fn load_gif() -> Vec<Image> {
 
         for y in 0..img.dimensions().1 {
             for x in 0..img.dimensions().0 {
-                let image::Rgba([r, g, b, a]) = img.get_pixel(x, y);
-
-                if *a == 0 {
-                    image.pixels.push(Rgba {
-                        r: 96,
-                        g: 96,
-                        b: 96,
-                        a: 255,
-                    });
-                } else {
-                    image.pixels.push(Rgba {
-                        r: *r,
-                        g: *g,
-                        b: *b,
-                        a: 255,
-                    });
-                }
+                let image::Rgba([r, g, b, a]) = *img.get_pixel(x, y);
+                image.pixels.push(Rgba { r, g, b, a });
             }
         }
 

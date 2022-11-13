@@ -94,7 +94,7 @@ impl HalfBlockRenderer {
 
         for y in y0..y1 {
             for x in x0..x1 {
-                self.draw_pixel(Point::new(x, y), c);
+                self.draw_pixel(Point::new(x, y), c.clone());
             }
         }
     }
