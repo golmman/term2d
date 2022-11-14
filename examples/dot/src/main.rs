@@ -1,7 +1,7 @@
 use term2d::{
     color::Rgba,
     point::Point,
-    renderer::{full_block_renderer::FullBlockRenderer, Renderer},
+    renderer::{full_block_renderer::FullblockCanvas, Renderer},
     run,
     screen::DefaultScreen,
     Controller, Event, Key,
@@ -9,14 +9,14 @@ use term2d::{
 
 struct DotController {
     frame: u32,
-    renderer: FullBlockRenderer,
+    renderer: FullblockCanvas,
 }
 
 impl DotController {
     fn new() -> Self {
         Self {
             frame: 0,
-            renderer: FullBlockRenderer::new(),
+            renderer: FullblockCanvas::new(),
         }
     }
 }

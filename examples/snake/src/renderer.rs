@@ -1,20 +1,20 @@
 use term2d::{
     color::{Color, Rgba},
     point::Point,
-    renderer::{half_block_renderer::HalfBlockRenderer, Renderer},
+    renderer::{half_block_renderer::HalfblockCanvas, Renderer},
     screen::DefaultScreen,
 };
 
 use crate::state::State;
 
 pub struct SnakeRenderer {
-    renderer: HalfBlockRenderer,
+    renderer: HalfblockCanvas,
 }
 
 impl SnakeRenderer {
     pub fn new() -> Self {
         Self {
-            renderer: HalfBlockRenderer::new(),
+            renderer: HalfblockCanvas::new(),
         }
     }
 

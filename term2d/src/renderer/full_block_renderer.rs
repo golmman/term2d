@@ -2,17 +2,17 @@ use crate::screen::DefaultScreen;
 
 use super::Renderer;
 
-pub struct FullBlockRenderer {
+pub struct FullblockCanvas {
     screen: Option<DefaultScreen>,
 }
 
-impl FullBlockRenderer {
+impl FullblockCanvas {
     pub fn new() -> Self {
         Self { screen: None }
     }
 }
 
-impl Renderer for FullBlockRenderer {
+impl Renderer for FullblockCanvas {
     fn init(&mut self, screen: DefaultScreen) {
         self.screen = Some(screen);
     }

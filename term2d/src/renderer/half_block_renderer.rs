@@ -1,24 +1,41 @@
+use std::{rc::Rc, cell::RefCell};
+
 use crate::{
     color::{Color, Rgba},
     point::Point,
-    screen::DefaultScreen, rect::Rect,
+    rect::Rect,
+    screen::DefaultScreen,
 };
 
 use super::Renderer;
 
 const HALF_BLOCK: char = '▀';
 
-pub struct HalfBlockRenderer {
+pub struct HalfblockCanvas {
     screen: Option<DefaultScreen>,
 }
 
-impl HalfBlockRenderer {
+impl HalfblockCanvas {
     pub fn new() -> Self {
         Self { screen: None }
     }
 }
 
-impl Renderer for HalfBlockRenderer {
+impl From<DefaultScreen> for HalfblockCanvas {
+    fn from(screen: DefaultScreen) -> Self {
+        Self {
+            screen: Some(screen),
+        }
+    }
+}
+
+impl From<DefaultScreen> for Rc<RefCell<HalfblockCanvas>> {
+    fn from(screen: DefaultScreen) -> Self {
+        Rc::new(RefCell::new(HalfblockCanvas::from(screen)))
+    }
+}
+
+impl Renderer for HalfblockCanvas {
     fn init(&mut self, screen: DefaultScreen) {
         self.screen = Some(screen);
     }
@@ -85,7 +102,7 @@ impl Renderer for HalfBlockRenderer {
     }
 }
 
-impl HalfBlockRenderer {
+impl HalfblockCanvas {
     pub fn draw_rect(&mut self, r: Rect, c: Rgba) {
         let x0 = r.pos.x;
         let x1 = x0 + r.size.width();

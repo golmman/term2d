@@ -1,23 +1,29 @@
+use std::{rc::Rc, cell::RefCell};
+
 use term2d::{
     color::Rgba,
     point::Point,
     rect::Rect,
-    renderer::{half_block_renderer::HalfBlockRenderer, Renderer},
+    renderer::{half_block_renderer::HalfblockCanvas, Renderer},
     run,
     screen::DefaultScreen,
-    Controller, Event, Key,
+    Controller, Event, Key, view::renderer::{primitive::PrimitiveRenderer, image::ImageRenderer},
 };
 
 struct DotController {
     frame: u32,
-    renderer: HalfBlockRenderer,
+    canvas: HalfblockCanvas,
+    primitive_renderer: PrimitiveRenderer<HalfblockCanvas>,
+    image_renderer: ImageRenderer<HalfblockCanvas>,
 }
 
 impl DotController {
     fn new() -> Self {
         Self {
             frame: 0,
-            renderer: HalfBlockRenderer::new(),
+            canvas: HalfblockCanvas::new(),
+            image_renderer: ImageRenderer::new(),
+            primitive_renderer: PrimitiveRenderer::new(),
         }
     }
 }
@@ -34,14 +40,14 @@ impl Controller for DotController {
             Event::Elapse => {}
         }
 
-        self.renderer.clear();
-        self.renderer.draw_text_transparent(
+        self.canvas.clear();
+        self.canvas.draw_text_transparent(
             Point::new(2, 0),
             Rgba::white(),
             format!("press 'q' to quit, frame: {}", self.frame),
         );
 
-        self.renderer.draw_rect(
+        self.canvas.draw_rect(
             Rect::new(3, 3, 15, 10),
             Rgba {
                 r: 255,
@@ -50,7 +56,7 @@ impl Controller for DotController {
                 a: 255,
             },
         );
-        self.renderer.draw_rect(
+        self.canvas.draw_rect(
             Rect::new(12, 5, 15, 10),
             Rgba {
                 r: 0,
@@ -59,7 +65,7 @@ impl Controller for DotController {
                 a: 128,
             },
         );
-        self.renderer.draw_rect(
+        self.canvas.draw_rect(
             Rect::new(8, 8, 15, 15),
             Rgba {
                 r: 0,
@@ -69,7 +75,7 @@ impl Controller for DotController {
             },
         );
 
-        self.renderer.display();
+        self.canvas.display();
 
         self.frame += 1;
 
@@ -81,7 +87,15 @@ impl Controller for DotController {
     }
 
     fn init(&mut self, screen: DefaultScreen) {
-        self.renderer.init(screen);
+        //self.canvas.init(screen);
+
+        //let h = HalfblockCanvas::from(screen);
+        //let x = Rc::new(RefCell::new(h));
+        let x  = &Rc::from(screen);
+
+        self.image_renderer.init(x);
+        self.primitive_renderer.init(x);
+
     }
 }
 

@@ -6,7 +6,7 @@ use term2d::{
     color::Rgba,
     point::Point,
     rect::Rect,
-    renderer::{half_block_renderer::HalfBlockRenderer, Renderer},
+    renderer::{half_block_renderer::HalfblockCanvas, Renderer},
     run,
     screen::DefaultScreen,
     Controller, Event, Key,
@@ -20,7 +20,7 @@ struct Image {
 struct DotController {
     frame: u32,
     gif: Vec<Image>,
-    renderer: HalfBlockRenderer,
+    renderer: HalfblockCanvas,
 }
 
 impl DotController {
@@ -28,7 +28,7 @@ impl DotController {
         Self {
             frame: 0,
             gif,
-            renderer: HalfBlockRenderer::new(),
+            renderer: HalfblockCanvas::new(),
         }
     }
 }

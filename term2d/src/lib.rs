@@ -13,6 +13,7 @@ pub mod point;
 pub mod rect;
 pub mod renderer;
 pub mod screen;
+pub mod view;
 
 pub type Key = termion::event::Key;
 
