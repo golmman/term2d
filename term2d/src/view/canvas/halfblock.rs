@@ -4,7 +4,7 @@ use crate::{
     color::{Color, Rgba},
     point::Point,
     rect::Rect,
-    screen::DefaultScreen,
+    view::screen::DefaultScreen,
 };
 
 use super::Canvas;

@@ -1,7 +1,7 @@
 use crate::{
     color::{Color, Rgba},
     point::Point,
-    screen::DefaultScreen,
+    view::screen::DefaultScreen,
 };
 
 pub mod fullblock;

@@ -7,8 +7,8 @@ use term2d::{
     point::Point,
     rect::Rect,
     run,
-    screen::DefaultScreen,
     view::canvas::{halfblock::HalfblockCanvas, Canvas},
+    view::screen::DefaultScreen,
     Controller, Event, Key,
 };
 

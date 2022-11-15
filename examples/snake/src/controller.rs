@@ -1,6 +1,6 @@
 use crate::renderer::SnakeRenderer;
 use crate::state::State;
-use term2d::{screen::DefaultScreen, Controller, Event, Key};
+use term2d::{view::screen::DefaultScreen, Controller, Event, Key};
 
 pub struct SnakeController {
     renderer: SnakeRenderer,

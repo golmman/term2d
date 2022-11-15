@@ -5,13 +5,12 @@ use std::{
     time::Duration,
 };
 
-use screen::DefaultScreen;
 use termion::input::TermRead;
+use view::screen::DefaultScreen;
 
 pub mod color;
 pub mod point;
 pub mod rect;
-pub mod screen;
 pub mod view;
 
 pub type Key = termion::event::Key;

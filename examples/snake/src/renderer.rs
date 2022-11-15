@@ -1,8 +1,8 @@
 use term2d::{
     color::{Color, Rgba},
     point::Point,
-    screen::DefaultScreen,
     view::canvas::{halfblock::HalfblockCanvas, Canvas},
+    view::screen::DefaultScreen,
 };
 
 use crate::state::State;

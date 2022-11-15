@@ -1,11 +1,11 @@
-use std::{cell::RefCell, rc::Rc};
+use std::rc::Rc;
 
 use term2d::{
     color::Rgba,
     point::Point,
     rect::Rect,
     run,
-    screen::DefaultScreen,
+    view::screen::DefaultScreen,
     view::{
         canvas::{halfblock::HalfblockCanvas, Canvas},
         renderer::{image::ImageRenderer, primitive::PrimitiveRenderer},

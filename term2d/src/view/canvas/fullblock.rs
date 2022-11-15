@@ -1,4 +1,4 @@
-use crate::screen::DefaultScreen;
+use crate::view::screen::DefaultScreen;
 
 use super::Canvas;
 

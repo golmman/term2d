@@ -2,8 +2,8 @@ use term2d::{
     color::Rgba,
     point::Point,
     run,
-    screen::DefaultScreen,
     view::canvas::{fullblock::FullblockCanvas, Canvas},
+    view::screen::DefaultScreen,
     Controller, Event, Key,
 };
 
