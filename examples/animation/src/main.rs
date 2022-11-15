@@ -47,9 +47,9 @@ impl Controller for DotController {
 
         self.renderer.clear();
         self.renderer.draw_text_transparent(
-            Point::new(2, 0),
-            Rgba::white(),
-            format!(
+            &Point::new(2, 0),
+            &Rgba::white(),
+            &format!(
                 "press 'q' to quit, frame: {}, {:?}",
                 self.frame, self.gif[0].size
             ),
@@ -57,7 +57,7 @@ impl Controller for DotController {
 
         self.renderer.draw_rect(
             Rect::new(2, 2, 20, 20),
-            Rgba {
+            &Rgba {
                 r: 96,
                 g: 96,
                 b: 96,
@@ -71,9 +71,9 @@ impl Controller for DotController {
         for y in 0..image.size.height() {
             for x in 0..image.size.width() {
                 let index = (x + y * image.size.width()) as usize;
-                let rgb = image.pixels[index].clone();
+                let rgb = &image.pixels[index];
                 self.renderer
-                    .draw_pixel(Point::new(gif_x + x, gif_y + y), rgb);
+                    .draw_pixel(&Point::new(gif_x + x, gif_y + y), rgb);
             }
         }
 

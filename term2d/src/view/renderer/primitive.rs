@@ -1,6 +1,6 @@
 use std::{cell::RefCell, rc::Rc};
 
-use crate::{view::canvas::Canvas, point::Point, color::Rgba};
+use crate::{color::Rgba, point::Point, view::canvas::Canvas};
 
 pub struct PrimitiveRenderer<T: Canvas> {
     canvas: Option<Rc<RefCell<T>>>,
@@ -15,7 +15,7 @@ impl<T: Canvas> PrimitiveRenderer<T> {
         self.canvas = Some(canvas.clone());
     }
 
-    fn draw_pixel(&mut self, p: Point, rgb: Rgba) {
+    //fn draw_pixel(&mut self, p: &Point, rgb: &Rgba) {
 
-    }
+    //}
 }

@@ -1,4 +1,4 @@
-use std::{rc::Rc, cell::RefCell};
+use std::{cell::RefCell, rc::Rc};
 
 use term2d::{
     color::Rgba,
@@ -45,14 +45,14 @@ impl Controller for DotController {
 
         self.canvas.clear();
         self.canvas.draw_text_transparent(
-            Point::new(2, 0),
-            Rgba::white(),
-            format!("press 'q' to quit, frame: {}", self.frame),
+            &Point::new(2, 0),
+            &Rgba::white(),
+            &format!("press 'q' to quit, frame: {}", self.frame),
         );
 
         self.canvas.draw_rect(
             Rect::new(3, 3, 15, 10),
-            Rgba {
+            &Rgba {
                 r: 255,
                 g: 0,
                 b: 0,
@@ -61,7 +61,7 @@ impl Controller for DotController {
         );
         self.canvas.draw_rect(
             Rect::new(12, 5, 15, 10),
-            Rgba {
+            &Rgba {
                 r: 0,
                 g: 255,
                 b: 0,
@@ -70,7 +70,7 @@ impl Controller for DotController {
         );
         self.canvas.draw_rect(
             Rect::new(8, 8, 15, 15),
-            Rgba {
+            &Rgba {
                 r: 0,
                 g: 0,
                 b: 255,

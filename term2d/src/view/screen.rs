@@ -61,7 +61,7 @@ impl DefaultScreen {
         self.pixel_buffer = vec![Pixel::default(); buffer_size];
     }
 
-    pub fn draw_pixel(&mut self, p: Point, rgb: Rgba) {
+    pub fn draw_pixel(&mut self, p: &Point, rgb: &Rgba) {
         let index = (self.size.width() * p.y + p.x) as usize;
 
         let old_rgba = &self.pixel_buffer[index].color.bg;
@@ -78,7 +78,7 @@ impl DefaultScreen {
         };
     }
 
-    pub fn draw_char(&mut self, p: Point, color: Color, ch: char) {
+    pub fn draw_char(&mut self, p: &Point, color: &Color, ch: char) {
         let index = (self.size.width() * p.y + p.x) as usize;
 
         let old_bg = &self.pixel_buffer[index].color.bg;
@@ -97,7 +97,7 @@ impl DefaultScreen {
         };
     }
 
-    pub fn draw_text(&mut self, p: Point, color: Color, text: String) {
+    pub fn draw_text(&mut self, p: &Point, color: &Color, text: &str) {
         let index = (self.size.width() * p.y + p.x) as usize;
 
         for (i, ch) in text.chars().enumerate() {
@@ -108,7 +108,7 @@ impl DefaultScreen {
         }
     }
 
-    pub fn draw_text_transparent(&mut self, p: Point, fg_color: Rgba, text: String) {
+    pub fn draw_text_transparent(&mut self, p: &Point, fg_color: &Rgba, text: &str) {
         let index = (self.size.width() * p.y + p.x) as usize;
         for (i, ch) in text.chars().enumerate() {
             let color = Color {
@@ -119,7 +119,7 @@ impl DefaultScreen {
         }
     }
 
-    pub fn get_color(&self, p: Point) -> Color {
+    pub fn get_color(&self, p: &Point) -> Color {
         let index = (self.size.width() * p.y + p.x) as usize;
         self.pixel_buffer[index].color.clone()
     }

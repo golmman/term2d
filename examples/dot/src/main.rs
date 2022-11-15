@@ -35,17 +35,17 @@ impl Controller for DotController {
 
         self.renderer.clear();
         self.renderer.draw_text_transparent(
-            Point::new(2, 0),
-            Rgba::white(),
-            format!("press 'q' to quit, frame: {}", self.frame),
+            &Point::new(2, 0),
+            &Rgba::white(),
+            &format!("press 'q' to quit, frame: {}", self.frame),
         );
-        self.renderer.draw_pixel(Point::new(0, 0), Rgba::red());
-        self.renderer.draw_pixel(Point::new(1, 1), Rgba::red());
-        self.renderer.draw_pixel(Point::new(2, 2), Rgba::red());
-        self.renderer.draw_pixel(Point::new(3, 3), Rgba::red());
-        self.renderer.draw_pixel(Point::new(4, 4), Rgba::red());
-        self.renderer.draw_pixel(Point::new(5, 5), Rgba::red());
-        self.renderer.draw_pixel(Point::new(6, 6), Rgba::red());
+        self.renderer.draw_pixel(&Point::new(0, 0), &Rgba::red());
+        self.renderer.draw_pixel(&Point::new(1, 1), &Rgba::red());
+        self.renderer.draw_pixel(&Point::new(2, 2), &Rgba::red());
+        self.renderer.draw_pixel(&Point::new(3, 3), &Rgba::red());
+        self.renderer.draw_pixel(&Point::new(4, 4), &Rgba::red());
+        self.renderer.draw_pixel(&Point::new(5, 5), &Rgba::red());
+        self.renderer.draw_pixel(&Point::new(6, 6), &Rgba::red());
         self.renderer.display();
 
         self.frame += 1;

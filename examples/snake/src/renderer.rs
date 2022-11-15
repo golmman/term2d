@@ -40,14 +40,14 @@ impl SnakeRenderer {
 
     fn draw_info(&mut self, state: &State) {
         self.renderer.draw_text_transparent(
-            Point::new(2, 2),
-            Rgba::white(),
-            format!("press 'q' to quit, snake length: {}", state.snake.len(),),
+            &Point::new(2, 2),
+            &Rgba::white(),
+            &format!("press 'q' to quit, snake length: {}", state.snake.len(),),
         );
     }
 
     fn draw_food(&mut self, state: &State) {
-        self.renderer.draw_pixel(state.food.clone(), Rgba::red());
+        self.renderer.draw_pixel(&state.food, &Rgba::red());
     }
 
     fn draw_snake(&mut self, state: &State) {
@@ -56,8 +56,8 @@ impl SnakeRenderer {
         }
 
         self.renderer.draw_pixel(
-            state.snake[0].clone(),
-            Rgba {
+            &state.snake[0],
+            &Rgba {
                 r: 32,
                 g: 128,
                 b: 32,
@@ -66,8 +66,8 @@ impl SnakeRenderer {
         );
         for i in 1..state.snake.len() {
             self.renderer.draw_pixel(
-                state.snake[i].clone(),
-                Rgba {
+                &state.snake[i],
+                &Rgba {
                     r: 64,
                     g: 192,
                     b: 64,
@@ -88,7 +88,7 @@ impl SnakeRenderer {
 
         let x = state.screen_size.width() / 2 - LEN / 2;
         let y = state.screen_size.height() / 2 - 2;
-        let color = Color {
+        let color = &Color {
             fg: Rgba {
                 r: 16,
                 g: 16,
@@ -103,50 +103,50 @@ impl SnakeRenderer {
             },
         };
 
+        self.renderer.draw_text(&Point::new(x, y), color, LINE_1);
         self.renderer
-            .draw_text(Point::new(x, y), color.clone(), LINE_1.to_string());
-        self.renderer
-            .draw_text(Point::new(x, y + 2), color.clone(), LINE_2.to_string());
+            .draw_text(&Point::new(x, y + 2), color, LINE_2);
     }
 
     fn draw_frame(&mut self, state: &State) {
         let w = state.screen_size.width();
         let h = state.screen_size.height();
+        let color_text = &Color::text();
 
         for x in 1..w - 1 {
             self.renderer
-                .draw_char(Point::new(x, 0), Color::text(), '\u{2500}');
+                .draw_char(&Point::new(x, 0), color_text, '\u{2500}');
             self.renderer
-                .draw_char(Point::new(x, 4), Color::text(), '\u{2500}');
+                .draw_char(&Point::new(x, 4), color_text, '\u{2500}');
             self.renderer
-                .draw_char(Point::new(x, h - 1), Color::text(), '\u{2500}');
+                .draw_char(&Point::new(x, h - 1), color_text, '\u{2500}');
         }
 
         for y in 3..h / 2 - 1 {
             self.renderer
-                .draw_char(Point::new(0, y * 2), Color::text(), '\u{2502}');
+                .draw_char(&Point::new(0, y * 2), color_text, '\u{2502}');
             self.renderer
-                .draw_char(Point::new(w - 1, y * 2), Color::text(), '\u{2502}');
+                .draw_char(&Point::new(w - 1, y * 2), color_text, '\u{2502}');
         }
 
         self.renderer
-            .draw_char(Point::new(0, 0), Color::text(), '\u{250C}');
+            .draw_char(&Point::new(0, 0), color_text, '\u{250C}');
         self.renderer
-            .draw_char(Point::new(w - 1, 0), Color::text(), '\u{2510}');
+            .draw_char(&Point::new(w - 1, 0), color_text, '\u{2510}');
 
         self.renderer
-            .draw_char(Point::new(0, 2), Color::text(), '\u{2502}');
+            .draw_char(&Point::new(0, 2), color_text, '\u{2502}');
         self.renderer
-            .draw_char(Point::new(w - 1, 2), Color::text(), '\u{2502}');
+            .draw_char(&Point::new(w - 1, 2), color_text, '\u{2502}');
 
         self.renderer
-            .draw_char(Point::new(0, 4), Color::text(), '\u{251C}');
+            .draw_char(&Point::new(0, 4), color_text, '\u{251C}');
         self.renderer
-            .draw_char(Point::new(w - 1, 4), Color::text(), '\u{2524}');
+            .draw_char(&Point::new(w - 1, 4), color_text, '\u{2524}');
 
         self.renderer
-            .draw_char(Point::new(0, h - 1), Color::text(), '\u{2514}');
+            .draw_char(&Point::new(0, h - 1), color_text, '\u{2514}');
         self.renderer
-            .draw_char(Point::new(w - 1, h - 1), Color::text(), '\u{2518}');
+            .draw_char(&Point::new(w - 1, h - 1), color_text, '\u{2518}');
     }
 }
