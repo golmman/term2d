@@ -1,4 +1,4 @@
-use std::{rc::Rc, cell::RefCell};
+use std::{cell::RefCell, rc::Rc};
 
 use crate::{
     color::{Color, Rgba},
@@ -7,7 +7,7 @@ use crate::{
     screen::DefaultScreen,
 };
 
-use super::Renderer;
+use super::Canvas;
 
 const HALF_BLOCK: char = '▀';
 
@@ -35,7 +35,7 @@ impl From<DefaultScreen> for Rc<RefCell<HalfblockCanvas>> {
     }
 }
 
-impl Renderer for HalfblockCanvas {
+impl Canvas for HalfblockCanvas {
     fn init(&mut self, screen: DefaultScreen) {
         self.screen = Some(screen);
     }

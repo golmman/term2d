@@ -1,9 +1,9 @@
 use term2d::{
     color::Rgba,
     point::Point,
-    renderer::{full_block_renderer::FullblockCanvas, Renderer},
     run,
     screen::DefaultScreen,
+    view::canvas::{fullblock::FullblockCanvas, Canvas},
     Controller, Event, Key,
 };
 

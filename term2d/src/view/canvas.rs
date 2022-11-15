@@ -4,10 +4,10 @@ use crate::{
     screen::DefaultScreen,
 };
 
-pub mod full_block_renderer;
-pub mod half_block_renderer;
+pub mod fullblock;
+pub mod halfblock;
 
-pub trait Renderer {
+pub trait Canvas {
     fn init(&mut self, screen: DefaultScreen);
     fn resize(&mut self) -> Point;
     fn clear(&mut self);

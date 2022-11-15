@@ -1,6 +1,6 @@
 use crate::screen::DefaultScreen;
 
-use super::Renderer;
+use super::Canvas;
 
 pub struct FullblockCanvas {
     screen: Option<DefaultScreen>,
@@ -12,7 +12,7 @@ impl FullblockCanvas {
     }
 }
 
-impl Renderer for FullblockCanvas {
+impl Canvas for FullblockCanvas {
     fn init(&mut self, screen: DefaultScreen) {
         self.screen = Some(screen);
     }

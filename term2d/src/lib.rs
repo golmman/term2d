@@ -11,7 +11,6 @@ use termion::input::TermRead;
 pub mod color;
 pub mod point;
 pub mod rect;
-pub mod renderer;
 pub mod screen;
 pub mod view;
 

@@ -1,12 +1,12 @@
 use std::{cell::RefCell, rc::Rc};
 
-use crate::renderer::{half_block_renderer::HalfblockCanvas, Renderer};
+use crate::view::canvas::Canvas;
 
-pub struct ImageRenderer<T: Renderer> {
+pub struct ImageRenderer<T: Canvas> {
     canvas: Option<Rc<RefCell<T>>>,
 }
 
-impl<T: Renderer> ImageRenderer<T> {
+impl<T: Canvas> ImageRenderer<T> {
     pub fn new() -> Self {
         Self { canvas: None }
     }

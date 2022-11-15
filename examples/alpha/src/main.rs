@@ -1,13 +1,16 @@
-use std::{rc::Rc, cell::RefCell};
+use std::{cell::RefCell, rc::Rc};
 
 use term2d::{
     color::Rgba,
     point::Point,
     rect::Rect,
-    renderer::{half_block_renderer::HalfblockCanvas, Renderer},
     run,
     screen::DefaultScreen,
-    Controller, Event, Key, view::renderer::{primitive::PrimitiveRenderer, image::ImageRenderer},
+    view::{
+        canvas::{halfblock::HalfblockCanvas, Canvas},
+        renderer::{image::ImageRenderer, primitive::PrimitiveRenderer},
+    },
+    Controller, Event, Key,
 };
 
 struct DotController {
@@ -91,11 +94,10 @@ impl Controller for DotController {
 
         //let h = HalfblockCanvas::from(screen);
         //let x = Rc::new(RefCell::new(h));
-        let x  = &Rc::from(screen);
+        let x = &Rc::from(screen);
 
         self.image_renderer.init(x);
         self.primitive_renderer.init(x);
-
     }
 }
 

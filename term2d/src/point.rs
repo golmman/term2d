@@ -77,10 +77,7 @@ impl std::fmt::Debug for Point {
 
 impl From<(i32, i32)> for Point {
     fn from(p: (i32, i32)) -> Self {
-        Self {
-            x: p.0,
-            y: p.1,
-        }
+        Self { x: p.0, y: p.1 }
     }
 }
 

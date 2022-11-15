@@ -6,9 +6,9 @@ use term2d::{
     color::Rgba,
     point::Point,
     rect::Rect,
-    renderer::{half_block_renderer::HalfblockCanvas, Renderer},
     run,
     screen::DefaultScreen,
+    view::canvas::{halfblock::HalfblockCanvas, Canvas},
     Controller, Event, Key,
 };
 
