@@ -1,4 +1,4 @@
-use std::rc::Rc;
+use std::{rc::Rc, cell::RefCell};
 
 use term2d::{
     color::Rgba,
@@ -92,9 +92,8 @@ impl Controller for DotController {
     fn init(&mut self, screen: DefaultScreen) {
         //self.canvas.init(screen);
 
-        //let h = HalfblockCanvas::from(screen);
-        //let x = Rc::new(RefCell::new(h));
-        let x = &Rc::from(screen);
+        let h = HalfblockCanvas::from(screen);
+        let x = &Rc::new(RefCell::new(h));
 
         self.image_renderer.init(x);
         self.primitive_renderer.init(x);

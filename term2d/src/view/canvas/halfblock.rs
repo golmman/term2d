@@ -1,5 +1,3 @@
-use std::{cell::RefCell, rc::Rc};
-
 use crate::{
     color::{Color, Rgba},
     point::Point,
@@ -26,12 +24,6 @@ impl From<DefaultScreen> for HalfblockCanvas {
         Self {
             screen: Some(screen),
         }
-    }
-}
-
-impl From<DefaultScreen> for Rc<RefCell<HalfblockCanvas>> {
-    fn from(screen: DefaultScreen) -> Self {
-        Rc::new(RefCell::new(HalfblockCanvas::from(screen)))
     }
 }
 

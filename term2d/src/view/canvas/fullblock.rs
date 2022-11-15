@@ -12,6 +12,14 @@ impl FullblockCanvas {
     }
 }
 
+impl From<DefaultScreen> for FullblockCanvas {
+    fn from(screen: DefaultScreen) -> Self {
+        Self {
+            screen: Some(screen),
+        }
+    }
+}
+
 impl Canvas for FullblockCanvas {
     fn init(&mut self, screen: DefaultScreen) {
         self.screen = Some(screen);
