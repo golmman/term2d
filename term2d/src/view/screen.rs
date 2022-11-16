@@ -108,6 +108,7 @@ impl DefaultScreen {
         }
     }
 
+    // TODO: remove
     pub fn draw_text_transparent(&mut self, p: &Point, fg_color: &Rgba, text: &str) {
         let index = (self.size.width() * p.y + p.x) as usize;
         for (i, ch) in text.chars().enumerate() {

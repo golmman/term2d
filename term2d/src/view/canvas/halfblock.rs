@@ -1,7 +1,6 @@
 use crate::{
     color::{Color, Rgba},
     point::Point,
-    rect::Rect,
     view::screen::DefaultScreen,
 };
 
@@ -45,7 +44,6 @@ impl Canvas for HalfblockCanvas {
         let x = p.x;
         let y = p.y / 2;
 
-        //let old_color = self.screen.as_ref().unwrap().get_color(&Point::new(x, y));
         let old_color = self.screen.as_ref().unwrap().get_color(&Point::new(x, y));
 
         let new_color = if p.y % 2 == 0 {
@@ -92,20 +90,5 @@ impl Canvas for HalfblockCanvas {
 
     fn display(&mut self) {
         self.screen.as_mut().unwrap().display();
-    }
-}
-
-impl HalfblockCanvas {
-    pub fn draw_rect(&mut self, r: Rect, c: &Rgba) {
-        let x0 = r.pos.x;
-        let x1 = x0 + r.size.width();
-        let y0 = r.pos.y;
-        let y1 = y0 + r.size.height();
-
-        for y in y0..y1 {
-            for x in x0..x1 {
-                self.draw_pixel(&Point::new(x, y), c);
-            }
-        }
     }
 }

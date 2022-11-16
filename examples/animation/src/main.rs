@@ -56,7 +56,7 @@ impl Controller for DotController {
         );
 
         self.renderer.draw_rect(
-            Rect::new(2, 2, 20, 20),
+            &Rect::new(2, 2, 20, 20),
             &Rgba {
                 r: 96,
                 g: 96,
