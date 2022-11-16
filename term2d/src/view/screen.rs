@@ -98,25 +98,8 @@ impl DefaultScreen {
     }
 
     pub fn draw_text(&mut self, p: &Point, color: &Color, text: &str) {
-        let index = (self.size.width() * p.y + p.x) as usize;
-
         for (i, ch) in text.chars().enumerate() {
-            self.pixel_buffer[index + i] = Pixel {
-                ch,
-                color: color.clone(),
-            };
-        }
-    }
-
-    // TODO: remove
-    pub fn draw_text_transparent(&mut self, p: &Point, fg_color: &Rgba, text: &str) {
-        let index = (self.size.width() * p.y + p.x) as usize;
-        for (i, ch) in text.chars().enumerate() {
-            let color = Color {
-                bg: self.pixel_buffer[index + i].color.bg.clone(),
-                fg: fg_color.clone(),
-            };
-            self.pixel_buffer[index + i] = Pixel { ch, color };
+            self.draw_char(&Point::new(p.x + i as i32, p.y), color, ch);
         }
     }
 

@@ -30,6 +30,15 @@ impl Default for Rgba {
 }
 
 impl Rgba {
+    pub fn transparent() -> Self {
+        Self {
+            r: 0,
+            g: 0,
+            b: 0,
+            a: 0,
+        }
+    }
+
     pub fn black() -> Self {
         Self {
             r: 0,

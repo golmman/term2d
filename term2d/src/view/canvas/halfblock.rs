@@ -80,14 +80,6 @@ impl Canvas for HalfblockCanvas {
             .draw_text(scaled_point, color, text);
     }
 
-    fn draw_text_transparent(&mut self, p: &Point, fg_color: &Rgba, text: &str) {
-        let scaled_point = &Point::new(p.x, p.y / 2);
-        self.screen
-            .as_mut()
-            .unwrap()
-            .draw_text_transparent(scaled_point, fg_color, text);
-    }
-
     fn display(&mut self) {
         self.screen.as_mut().unwrap().display();
     }

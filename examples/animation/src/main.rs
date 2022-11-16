@@ -3,7 +3,7 @@ use image::AnimationDecoder;
 use std::fs::File;
 
 use term2d::{
-    color::Rgba,
+    color::{Rgba, Color},
     point::Point,
     rect::Rect,
     run,
@@ -46,9 +46,12 @@ impl Controller for DotController {
         }
 
         self.renderer.clear();
-        self.renderer.draw_text_transparent(
+        self.renderer.draw_text(
             &Point::new(2, 0),
-            &Rgba::white(),
+            &Color {
+                fg: Rgba::white(),
+                bg: Rgba::transparent(),
+            },
             &format!(
                 "press 'q' to quit, frame: {}, {:?}",
                 self.frame, self.gif[0].size

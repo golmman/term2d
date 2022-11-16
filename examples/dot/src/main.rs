@@ -1,5 +1,5 @@
 use term2d::{
-    color::Rgba,
+    color::{Rgba, Color},
     point::Point,
     run,
     view::canvas::{fullblock::FullblockCanvas, Canvas},
@@ -34,11 +34,16 @@ impl Controller for DotController {
         }
 
         self.renderer.clear();
-        self.renderer.draw_text_transparent(
+
+        self.renderer.draw_text(
             &Point::new(2, 0),
-            &Rgba::white(),
+            &Color {
+                fg: Rgba::white(),
+                bg: Rgba::transparent(),
+            },
             &format!("press 'q' to quit, frame: {}", self.frame),
         );
+
         self.renderer.draw_pixel(&Point::new(0, 0), &Rgba::red());
         self.renderer.draw_pixel(&Point::new(1, 1), &Rgba::red());
         self.renderer.draw_pixel(&Point::new(2, 2), &Rgba::red());
@@ -46,6 +51,7 @@ impl Controller for DotController {
         self.renderer.draw_pixel(&Point::new(4, 4), &Rgba::red());
         self.renderer.draw_pixel(&Point::new(5, 5), &Rgba::red());
         self.renderer.draw_pixel(&Point::new(6, 6), &Rgba::red());
+
         self.renderer.display();
 
         self.frame += 1;

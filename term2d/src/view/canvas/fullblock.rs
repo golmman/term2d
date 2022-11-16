@@ -49,13 +49,6 @@ impl Canvas for FullblockCanvas {
         self.screen.as_mut().unwrap().draw_text(p, color, text);
     }
 
-    fn draw_text_transparent(&mut self, p: &Point, fg_color: &Rgba, text: &str) {
-        self.screen
-            .as_mut()
-            .unwrap()
-            .draw_text_transparent(p, fg_color, text);
-    }
-
     fn display(&mut self) {
         self.screen.as_mut().unwrap().display();
     }

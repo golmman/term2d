@@ -1,5 +1,5 @@
 use term2d::{
-    color::Rgba,
+    color::{Rgba, Color},
     point::Point,
     rect::Rect,
     run,
@@ -35,11 +35,6 @@ impl Controller for DotController {
         }
 
         self.canvas.clear();
-        self.canvas.draw_text_transparent(
-            &Point::new(2, 0),
-            &Rgba::white(),
-            &format!("press 'q' to quit, frame: {}", self.frame),
-        );
 
         self.canvas.draw_rect(
             &Rect::new(3, 3, 15, 10),
@@ -67,6 +62,15 @@ impl Controller for DotController {
                 b: 255,
                 a: 128,
             },
+        );
+
+        self.canvas.draw_text(
+            &Point::new(2, 18),
+            &Color {
+                fg: Rgba::black(),
+                bg: Rgba { r: 255, g: 255, b: 255, a: 128 },
+            },
+            &format!("press 'q' to quit, frame: {}", self.frame),
         );
 
         self.canvas.display();

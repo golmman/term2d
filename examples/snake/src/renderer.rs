@@ -39,9 +39,12 @@ impl SnakeRenderer {
     }
 
     fn draw_info(&mut self, state: &State) {
-        self.renderer.draw_text_transparent(
+        self.renderer.draw_text(
             &Point::new(2, 2),
-            &Rgba::white(),
+            &Color {
+                fg: Rgba::white(),
+                bg: Rgba::transparent(),
+            },
             &format!("press 'q' to quit, snake length: {}", state.snake.len(),),
         );
     }
