@@ -1,7 +1,6 @@
 use term2d::{
     color::{Color, Rgba},
     point::Point,
-    run,
     view::canvas::{fullblock::FullblockCanvas, Canvas},
     view::screen::DefaultScreen,
     Controller, Event, Key,
@@ -9,14 +8,14 @@ use term2d::{
 
 struct DotController {
     frame: u32,
-    renderer: FullblockCanvas,
+    canvas: FullblockCanvas,
 }
 
 impl DotController {
     fn new() -> Self {
         Self {
             frame: 0,
-            renderer: FullblockCanvas::new(),
+            canvas: FullblockCanvas::new(),
         }
     }
 }
@@ -33,9 +32,9 @@ impl Controller for DotController {
             Event::Elapse => {}
         }
 
-        self.renderer.clear();
+        self.canvas.clear();
 
-        self.renderer.draw_text(
+        self.canvas.draw_text(
             &Point::new(2, 0),
             &Color {
                 fg: Rgba::white(),
@@ -44,15 +43,15 @@ impl Controller for DotController {
             &format!("press 'q' to quit, frame: {}", self.frame),
         );
 
-        self.renderer.draw_pixel(&Point::new(0, 0), &Rgba::red());
-        self.renderer.draw_pixel(&Point::new(1, 1), &Rgba::red());
-        self.renderer.draw_pixel(&Point::new(2, 2), &Rgba::red());
-        self.renderer.draw_pixel(&Point::new(3, 3), &Rgba::red());
-        self.renderer.draw_pixel(&Point::new(4, 4), &Rgba::red());
-        self.renderer.draw_pixel(&Point::new(5, 5), &Rgba::red());
-        self.renderer.draw_pixel(&Point::new(6, 6), &Rgba::red());
+        self.canvas.draw_pixel(&Point::new(0, 0), &Rgba::red());
+        self.canvas.draw_pixel(&Point::new(1, 1), &Rgba::red());
+        self.canvas.draw_pixel(&Point::new(2, 2), &Rgba::red());
+        self.canvas.draw_pixel(&Point::new(3, 3), &Rgba::red());
+        self.canvas.draw_pixel(&Point::new(4, 4), &Rgba::red());
+        self.canvas.draw_pixel(&Point::new(5, 5), &Rgba::red());
+        self.canvas.draw_pixel(&Point::new(6, 6), &Rgba::red());
 
-        self.renderer.display();
+        self.canvas.display();
 
         self.frame += 1;
 
@@ -64,11 +63,11 @@ impl Controller for DotController {
     }
 
     fn init(&mut self, screen: DefaultScreen) {
-        self.renderer.init(screen);
+        self.canvas.init(screen);
     }
 }
 
 fn main() {
     let controller = DotController::new();
-    run(controller);
+    term2d::run(controller);
 }

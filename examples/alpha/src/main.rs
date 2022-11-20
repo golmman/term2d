@@ -2,18 +2,17 @@ use term2d::{
     color::{Color, Rgba},
     point::Point,
     rect::Rect,
-    run,
     view::canvas::{halfblock::HalfblockCanvas, Canvas},
     view::screen::DefaultScreen,
     Controller, Event, Key,
 };
 
-struct DotController {
+struct AlphaController {
     frame: u32,
     canvas: HalfblockCanvas,
 }
 
-impl DotController {
+impl AlphaController {
     fn new() -> Self {
         Self {
             frame: 0,
@@ -22,7 +21,7 @@ impl DotController {
     }
 }
 
-impl Controller for DotController {
+impl Controller for AlphaController {
     fn update(&mut self, event: Event) -> bool {
         match event {
             Event::Key(key) => match key {
@@ -95,6 +94,6 @@ impl Controller for DotController {
 }
 
 fn main() {
-    let controller = DotController::new();
-    run(controller);
+    let controller = AlphaController::new();
+    term2d::run(controller);
 }

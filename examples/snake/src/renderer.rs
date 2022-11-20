@@ -8,26 +8,26 @@ use term2d::{
 use crate::state::State;
 
 pub struct SnakeRenderer {
-    renderer: HalfblockCanvas,
+    canvas: HalfblockCanvas,
 }
 
 impl SnakeRenderer {
     pub fn new() -> Self {
         Self {
-            renderer: HalfblockCanvas::new(),
+            canvas: HalfblockCanvas::new(),
         }
     }
 
     pub fn init(&mut self, screen: DefaultScreen) {
-        self.renderer.init(screen);
+        self.canvas.init(screen);
     }
 
     pub fn resize(&mut self) -> Point {
-        self.renderer.resize()
+        self.canvas.resize()
     }
 
     pub fn display(&mut self, state: &State) {
-        self.renderer.clear();
+        self.canvas.clear();
 
         self.draw_frame(state);
         self.draw_snake(state);
@@ -35,11 +35,11 @@ impl SnakeRenderer {
         self.draw_info(state);
         self.draw_game_over(state);
 
-        self.renderer.display();
+        self.canvas.display();
     }
 
     fn draw_info(&mut self, state: &State) {
-        self.renderer.draw_text(
+        self.canvas.draw_text(
             &Point::new(2, 2),
             &Color {
                 fg: Rgba::white(),
@@ -50,7 +50,7 @@ impl SnakeRenderer {
     }
 
     fn draw_food(&mut self, state: &State) {
-        self.renderer.draw_pixel(&state.food, &Rgba::red());
+        self.canvas.draw_pixel(&state.food, &Rgba::red());
     }
 
     fn draw_snake(&mut self, state: &State) {
@@ -58,7 +58,7 @@ impl SnakeRenderer {
             return;
         }
 
-        self.renderer.draw_pixel(
+        self.canvas.draw_pixel(
             &state.snake[0],
             &Rgba {
                 r: 32,
@@ -68,7 +68,7 @@ impl SnakeRenderer {
             },
         );
         for i in 1..state.snake.len() {
-            self.renderer.draw_pixel(
+            self.canvas.draw_pixel(
                 &state.snake[i],
                 &Rgba {
                     r: 64,
@@ -106,9 +106,8 @@ impl SnakeRenderer {
             },
         };
 
-        self.renderer.draw_text(&Point::new(x, y), color, LINE_1);
-        self.renderer
-            .draw_text(&Point::new(x, y + 2), color, LINE_2);
+        self.canvas.draw_text(&Point::new(x, y), color, LINE_1);
+        self.canvas.draw_text(&Point::new(x, y + 2), color, LINE_2);
     }
 
     fn draw_frame(&mut self, state: &State) {
@@ -117,39 +116,39 @@ impl SnakeRenderer {
         let color_text = &Color::text();
 
         for x in 1..w - 1 {
-            self.renderer
+            self.canvas
                 .draw_char(&Point::new(x, 0), color_text, '\u{2500}');
-            self.renderer
+            self.canvas
                 .draw_char(&Point::new(x, 4), color_text, '\u{2500}');
-            self.renderer
+            self.canvas
                 .draw_char(&Point::new(x, h - 1), color_text, '\u{2500}');
         }
 
         for y in 3..h / 2 - 1 {
-            self.renderer
+            self.canvas
                 .draw_char(&Point::new(0, y * 2), color_text, '\u{2502}');
-            self.renderer
+            self.canvas
                 .draw_char(&Point::new(w - 1, y * 2), color_text, '\u{2502}');
         }
 
-        self.renderer
+        self.canvas
             .draw_char(&Point::new(0, 0), color_text, '\u{250C}');
-        self.renderer
+        self.canvas
             .draw_char(&Point::new(w - 1, 0), color_text, '\u{2510}');
 
-        self.renderer
+        self.canvas
             .draw_char(&Point::new(0, 2), color_text, '\u{2502}');
-        self.renderer
+        self.canvas
             .draw_char(&Point::new(w - 1, 2), color_text, '\u{2502}');
 
-        self.renderer
+        self.canvas
             .draw_char(&Point::new(0, 4), color_text, '\u{251C}');
-        self.renderer
+        self.canvas
             .draw_char(&Point::new(w - 1, 4), color_text, '\u{2524}');
 
-        self.renderer
+        self.canvas
             .draw_char(&Point::new(0, h - 1), color_text, '\u{2514}');
-        self.renderer
+        self.canvas
             .draw_char(&Point::new(w - 1, h - 1), color_text, '\u{2518}');
     }
 }
