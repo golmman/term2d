@@ -1,5 +1,5 @@
 use term2d::{
-    color::{Rgba, Color},
+    color::{Color, Rgba},
     point::Point,
     run,
     view::canvas::{fullblock::FullblockCanvas, Canvas},

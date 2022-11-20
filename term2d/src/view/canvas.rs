@@ -1,5 +1,6 @@
 use crate::{
     color::{Color, Rgba},
+    model::image::Video,
     point::Point,
     rect::Rect,
     view::screen::DefaultScreen,
@@ -28,5 +29,19 @@ pub trait Canvas: Sized {
                 self.draw_pixel(&Point::new(x, y), c);
             }
         }
+    }
+
+    fn draw_video(&mut self, p: &Point, v: &mut Video) {
+        let image = &v.images[v.frame];
+
+        for y in 0..image.size.height() {
+            for x in 0..image.size.width() {
+                let index = (x + y * image.size.width()) as usize;
+                let rgb = &image.pixels[index];
+                self.draw_pixel(&Point::new(p.x + x, p.y + y), rgb);
+            }
+        }
+
+        v.frame = (v.frame + 1) % v.images.len();
     }
 }

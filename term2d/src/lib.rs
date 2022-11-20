@@ -9,6 +9,7 @@ use termion::input::TermRead;
 use view::screen::DefaultScreen;
 
 pub mod color;
+pub mod model;
 pub mod point;
 pub mod rect;
 pub mod view;

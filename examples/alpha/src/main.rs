@@ -1,5 +1,5 @@
 use term2d::{
-    color::{Rgba, Color},
+    color::{Color, Rgba},
     point::Point,
     rect::Rect,
     run,
@@ -68,7 +68,12 @@ impl Controller for DotController {
             &Point::new(2, 18),
             &Color {
                 fg: Rgba::black(),
-                bg: Rgba { r: 255, g: 255, b: 255, a: 128 },
+                bg: Rgba {
+                    r: 255,
+                    g: 255,
+                    b: 255,
+                    a: 128,
+                },
             },
             &format!("press 'q' to quit, frame: {}", self.frame),
         );

@@ -1,39 +1,33 @@
 use image::codecs::gif::GifDecoder;
 use image::AnimationDecoder;
 use std::fs::File;
+use std::path::Path;
+use term2d::model::image::Video;
 
 use term2d::{
-    color::{Rgba, Color},
+    color::{Color, Rgba},
     point::Point,
     rect::Rect,
-    run,
     view::canvas::{halfblock::HalfblockCanvas, Canvas},
     view::screen::DefaultScreen,
     Controller, Event, Key,
 };
 
-struct Image {
-    size: Point,
-    pixels: Vec<Rgba>,
+struct AnimationController {
+    video: Video,
+    canvas: HalfblockCanvas,
 }
 
-struct DotController {
-    frame: u32,
-    gif: Vec<Image>,
-    renderer: HalfblockCanvas,
-}
-
-impl DotController {
-    fn new(gif: Vec<Image>) -> Self {
+impl AnimationController {
+    fn new(video: Video) -> Self {
         Self {
-            frame: 0,
-            gif,
-            renderer: HalfblockCanvas::new(),
+            video,
+            canvas: HalfblockCanvas::new(),
         }
     }
 }
 
-impl Controller for DotController {
+impl Controller for AnimationController {
     fn update(&mut self, event: Event) -> bool {
         match event {
             Event::Key(key) => match key {
@@ -45,8 +39,9 @@ impl Controller for DotController {
             Event::Elapse => {}
         }
 
-        self.renderer.clear();
-        self.renderer.draw_text(
+        self.canvas.clear();
+
+        self.canvas.draw_text(
             &Point::new(2, 0),
             &Color {
                 fg: Rgba::white(),
@@ -54,11 +49,12 @@ impl Controller for DotController {
             },
             &format!(
                 "press 'q' to quit, frame: {}, {:?}",
-                self.frame, self.gif[0].size
+                self.video.frame,
+                self.video.images.len()
             ),
         );
 
-        self.renderer.draw_rect(
+        self.canvas.draw_rect(
             &Rect::new(2, 2, 20, 20),
             &Rgba {
                 r: 96,
@@ -68,21 +64,9 @@ impl Controller for DotController {
             },
         );
 
-        let gif_x = 2;
-        let gif_y = 3;
-        let image = &self.gif[self.frame as usize % self.gif.len()];
-        for y in 0..image.size.height() {
-            for x in 0..image.size.width() {
-                let index = (x + y * image.size.width()) as usize;
-                let rgb = &image.pixels[index];
-                self.renderer
-                    .draw_pixel(&Point::new(gif_x + x, gif_y + y), rgb);
-            }
-        }
+        self.canvas.draw_video(&Point::new(2, 3), &mut self.video);
 
-        self.renderer.display();
-
-        self.frame += 1;
+        self.canvas.display();
 
         true
     }
@@ -92,40 +76,29 @@ impl Controller for DotController {
     }
 
     fn init(&mut self, screen: DefaultScreen) {
-        self.renderer.init(screen);
+        self.canvas.init(screen);
     }
 }
 
 fn main() {
-    let gif = load_gif();
-    let controller = DotController::new(gif);
-    run(controller);
+    let raw_gif = load_gif_raw("examples/animation/data/walk.gif");
+    let video = Video::from(raw_gif);
+    let controller = AnimationController::new(video);
+    term2d::run(controller);
 }
 
-fn load_gif() -> Vec<Image> {
-    let mut gif = Vec::new();
-
-    let file_in = File::open("examples/animation/data/walk.gif").unwrap();
-    let decoder = GifDecoder::new(file_in).unwrap();
-    let frames = decoder.into_frames();
-    let frames = frames.collect_frames().unwrap();
-
-    for frame in frames {
-        let img = frame.buffer();
-        let mut image = Image {
-            size: Point::from(img.dimensions()),
-            pixels: Vec::new(),
-        };
-
-        for y in 0..img.dimensions().1 {
-            for x in 0..img.dimensions().0 {
-                let image::Rgba([r, g, b, a]) = *img.get_pixel(x, y);
-                image.pixels.push(Rgba { r, g, b, a });
-            }
-        }
-
-        gif.push(image);
-    }
-
-    gif
+fn load_gif_raw<T: AsRef<Path>>(path: T) -> Vec<(u32, u32, Vec<u8>)> {
+    let file_in = File::open(path).unwrap();
+    GifDecoder::new(file_in)
+        .unwrap()
+        .into_frames()
+        .map(|frame| {
+            let frame = frame.unwrap();
+            let buffer = frame.buffer();
+            let width = buffer.width();
+            let height = buffer.height();
+            let raw = frame.into_buffer().into_raw();
+            (width, height, raw)
+        })
+        .collect()
 }
