@@ -2,8 +2,8 @@ use crate::{color::Rgba, point::Point};
 
 #[derive(Clone)]
 pub struct Image {
-    pub size: Point,
     pub pixels: Vec<Rgba>,
+    pub size: Point,
 }
 
 impl From<(u32, u32, Vec<u8>)> for Image {
@@ -11,8 +11,8 @@ impl From<(u32, u32, Vec<u8>)> for Image {
         let (width, height, image_bytes) = raw_image;
 
         let mut image = Image {
-            size: Point::from((width, height)),
             pixels: Vec::new(),
+            size: Point::from((width, height)),
         };
 
         for i in 0..image_bytes.len() / 4 {
@@ -26,5 +26,24 @@ impl From<(u32, u32, Vec<u8>)> for Image {
         }
 
         image
+    }
+}
+
+impl Image {
+    pub fn mirror_y(&self) -> Self {
+        let mut mirrored_image = Self {
+            pixels: Vec::new(),
+            size: self.size.clone(),
+        };
+
+        for y in 0..self.size.height() {
+            for x in 0..self.size.width() {
+                let index = ((self.size.width() - 1 - x) + y * self.size.width()) as usize;
+                let rgba = self.pixels[index].clone();
+                mirrored_image.pixels.push(rgba);
+            }
+        }
+
+        mirrored_image
     }
 }

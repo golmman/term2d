@@ -25,7 +25,7 @@ struct AnimationController {
 
 impl AnimationController {
     fn new(cat_video: Video, deer_image: Image, walk_video: Video) -> Self {
-        let mut cat_video2 = cat_video.clone();
+        let mut cat_video2 = cat_video.mirror_y();
         cat_video2.frame = 3;
 
         Self {

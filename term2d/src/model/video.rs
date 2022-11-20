@@ -21,3 +21,18 @@ impl From<Vec<(u32, u32, Vec<u8>)>> for Video {
         video
     }
 }
+
+impl Video {
+    pub fn mirror_y(&self) -> Self {
+        let mut mirrored_video = Self {
+            frame: 0,
+            images: Vec::new(),
+        };
+
+        for image in &self.images {
+            mirrored_video.images.push(image.mirror_y());
+        }
+
+        mirrored_video
+    }
+}
