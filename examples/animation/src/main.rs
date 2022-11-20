@@ -1,8 +1,10 @@
 use image::codecs::gif::GifDecoder;
 use image::AnimationDecoder;
+use image::GenericImageView;
 use std::fs::File;
 use std::path::Path;
-use term2d::model::image::Video;
+use term2d::model::image::Image;
+use term2d::model::video::Video;
 
 use term2d::{
     color::{Color, Rgba},
@@ -14,14 +16,23 @@ use term2d::{
 };
 
 struct AnimationController {
-    video: Video,
+    cat_video: Video,
+    cat_video2: Video,
+    deer_image: Image,
+    walk_video: Video,
     canvas: HalfblockCanvas,
 }
 
 impl AnimationController {
-    fn new(video: Video) -> Self {
+    fn new(cat_video: Video, deer_image: Image, walk_video: Video) -> Self {
+        let mut cat_video2 = cat_video.clone();
+        cat_video2.frame = 3;
+
         Self {
-            video,
+            cat_video,
+            cat_video2,
+            deer_image,
+            walk_video,
             canvas: HalfblockCanvas::new(),
         }
     }
@@ -49,8 +60,8 @@ impl Controller for AnimationController {
             },
             &format!(
                 "press 'q' to quit, frame: {}, {:?}",
-                self.video.frame,
-                self.video.images.len()
+                self.walk_video.frame,
+                self.walk_video.images.len()
             ),
         );
 
@@ -64,7 +75,14 @@ impl Controller for AnimationController {
             },
         );
 
-        self.canvas.draw_video(&Point::new(2, 3), &mut self.video);
+        self.canvas
+            .draw_video(&Point::new(10, 6), &mut self.cat_video);
+        self.canvas
+            .draw_video(&Point::new(19, 6), &mut self.cat_video2);
+        self.canvas
+            .draw_video(&Point::new(2, 3), &mut self.walk_video);
+        self.canvas
+            .draw_image(&Point::new(30, 0), &mut self.deer_image);
 
         self.canvas.display();
 
@@ -81,9 +99,16 @@ impl Controller for AnimationController {
 }
 
 fn main() {
-    let raw_gif = load_gif_raw("examples/animation/data/walk.gif");
-    let video = Video::from(raw_gif);
-    let controller = AnimationController::new(video);
+    let cat_raw = load_gif_raw("examples/animation/data/cat.gif");
+    let walk_raw = load_gif_raw("examples/animation/data/walk.gif");
+    let deer_raw = load_image_raw("examples/animation/data/deer.png");
+
+    let cat_video = Video::from(cat_raw);
+    let walk_video = Video::from(walk_raw);
+    let deer_image = Image::from(deer_raw);
+
+    let controller = AnimationController::new(cat_video, deer_image, walk_video);
+
     term2d::run(controller);
 }
 
@@ -101,4 +126,11 @@ fn load_gif_raw<T: AsRef<Path>>(path: T) -> Vec<(u32, u32, Vec<u8>)> {
             (width, height, raw)
         })
         .collect()
+}
+
+fn load_image_raw<T: AsRef<Path>>(path: T) -> (u32, u32, Vec<u8>) {
+    let img = image::open(path).unwrap();
+    let (width, height) = img.dimensions();
+    let raw = img.into_bytes();
+    (width, height, raw)
 }

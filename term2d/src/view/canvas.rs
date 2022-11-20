@@ -1,6 +1,6 @@
 use crate::{
     color::{Color, Rgba},
-    model::image::Video,
+    model::{image::Image, video::Video},
     point::Point,
     rect::Rect,
     view::screen::DefaultScreen,
@@ -31,17 +31,19 @@ pub trait Canvas: Sized {
         }
     }
 
-    fn draw_video(&mut self, p: &Point, v: &mut Video) {
-        let image = &v.images[v.frame];
-
+    fn draw_image(&mut self, p: &Point, image: &Image) {
         for y in 0..image.size.height() {
             for x in 0..image.size.width() {
                 let index = (x + y * image.size.width()) as usize;
-                let rgb = &image.pixels[index];
-                self.draw_pixel(&Point::new(p.x + x, p.y + y), rgb);
+                let rgba = &image.pixels[index];
+                self.draw_pixel(&Point::new(p.x + x, p.y + y), rgba);
             }
         }
+    }
 
-        v.frame = (v.frame + 1) % v.images.len();
+    fn draw_video(&mut self, p: &Point, video: &mut Video) {
+        let image = &video.images[video.frame];
+        self.draw_image(p, image);
+        video.frame = (video.frame + 1) % video.images.len();
     }
 }
