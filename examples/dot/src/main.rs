@@ -11,15 +11,6 @@ struct DotController {
     canvas: HalfblockCanvas,
 }
 
-impl DotController {
-    fn new() -> Self {
-        Self {
-            frame: 0,
-            canvas: HalfblockCanvas::new(),
-        }
-    }
-}
-
 impl Controller for DotController {
     fn update(&mut self, event: Event) -> bool {
         match event {
@@ -33,7 +24,6 @@ impl Controller for DotController {
         }
 
         self.canvas.clear();
-
         self.canvas.draw_text(
             &Point::new(2, 0),
             &Color {
@@ -42,7 +32,6 @@ impl Controller for DotController {
             },
             &format!("press 'q' to quit, frame: {}", self.frame),
         );
-
         self.canvas.draw_pixel(&Point::new(10, 7), &Rgba::red());
         self.canvas.display();
 
@@ -51,16 +40,16 @@ impl Controller for DotController {
         true
     }
 
-    fn get_config(&self) -> term2d::Config {
-        term2d::Config { fps: 10 }
-    }
-
-    fn init(&mut self, screen: DefaultScreen) {
+    fn init(&mut self, screen: DefaultScreen) -> term2d::Config {
         self.canvas.init(screen);
+        term2d::Config { fps: 10 }
     }
 }
 
 fn main() {
-    let controller = DotController::new();
+    let controller = DotController {
+        frame: 0,
+        canvas: HalfblockCanvas::new(),
+    };
     term2d::run(controller);
 }

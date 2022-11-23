@@ -29,15 +29,12 @@ pub struct Config {
 
 pub trait Controller {
     fn update(&mut self, event: Event) -> bool;
-    fn get_config(&self) -> Config;
-    fn init(&mut self, screen: DefaultScreen);
+    fn init(&mut self, screen: DefaultScreen) -> Config;
 }
 
 pub fn run<C: Controller>(mut controller: C) {
     let screen = DefaultScreen::new();
-    controller.init(screen);
-
-    let config = controller.get_config();
+    let config = controller.init(screen);
 
     let (sender, receiver) = sync_channel::<Event>(1024);
 

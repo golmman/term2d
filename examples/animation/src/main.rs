@@ -89,12 +89,9 @@ impl Controller for AnimationController {
         true
     }
 
-    fn get_config(&self) -> term2d::Config {
-        term2d::Config { fps: 10 }
-    }
-
-    fn init(&mut self, screen: DefaultScreen) {
+    fn init(&mut self, screen: DefaultScreen) -> term2d::Config {
         self.canvas.init(screen);
+        term2d::Config { fps: 10 }
     }
 }
 
