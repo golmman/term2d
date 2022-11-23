@@ -1,3 +1,10 @@
+# term2d
+
+A simple 2d drawing engine.
+
+Example which draws some text and a red pixel:
+
+```rust
 use term2d::{
     color::{Color, Rgba},
     point::Point,
@@ -64,3 +71,4 @@ fn main() {
     let controller = DotController::new();
     term2d::run(controller);
 }
+```
