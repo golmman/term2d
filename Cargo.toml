@@ -4,5 +4,6 @@ members = [
     "examples/animation",
     "examples/dot",
     "examples/snake",
+    "examples/water",
     "term2d",
 ]
