@@ -33,6 +33,9 @@ impl Random {
     }
 
     pub fn next_range_u8(&mut self, range: &Range<u8>) -> u8 {
+        if range.is_empty() {
+            return range.start;
+        }
         (range.start as u32 + self.next() % (range.end as u32 - range.start as u32)) as u8
     }
 }

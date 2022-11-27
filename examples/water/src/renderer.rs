@@ -27,10 +27,15 @@ impl Renderer {
     pub fn draw(&mut self, state: &State) {
         self.canvas.clear();
 
-        self.draw_debug(state);
         self.draw_world(state);
+        self.draw_debug(state);
+        self.draw_cursor(state);
 
         self.canvas.display();
+    }
+
+    pub fn draw_cursor(&mut self, state: &State) {
+        self.canvas.draw_pixel(&state.cursor, &Rgba::red());
     }
 
     pub fn draw_debug(&mut self, state: &State) {
@@ -46,7 +51,9 @@ impl Renderer {
     }
 
     pub fn draw_world(&mut self, state: &State) {
-        self.canvas
-            .draw_image(&Point::new(3, 3), &state.world.image);
+        self.canvas.draw_image(
+            &Point::new(state.world.pos.x, state.world.pos.y),
+            &state.world.image,
+        );
     }
 }

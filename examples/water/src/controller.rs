@@ -22,6 +22,14 @@ impl Controller for DotController {
             Event::Key(key) => match key {
                 Key::Char('q') => return false,
                 Key::Ctrl('c') => return false,
+
+                Key::Char(' ') => self.state.toggle_dirt(),
+
+                Key::Char('h') => self.state.move_cursor_left(),
+                Key::Char('l') => self.state.move_cursor_right(),
+                Key::Char('k') => self.state.move_cursor_up(),
+                Key::Char('j') => self.state.move_cursor_down(),
+
                 _ => {}
             },
             Event::Resize => {}
