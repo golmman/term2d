@@ -28,6 +28,7 @@ impl Renderer {
         self.canvas.clear();
 
         self.draw_world(state);
+        self.draw_water(state);
         self.draw_debug(state);
         self.draw_cursor(state);
 
@@ -55,5 +56,16 @@ impl Renderer {
             &Point::new(state.world.pos.x, state.world.pos.y),
             &state.world.image,
         );
+    }
+
+    pub fn draw_water(&mut self, state: &State) {
+        for droplet in &state.world.water {
+            let droplet_pos = droplet.get_pos();
+            let a = Point::new(
+                state.world.pos.x + droplet_pos.x,
+                state.world.pos.y + droplet_pos.y,
+            );
+            self.canvas.draw_pixel(&a, &Rgba::blue());
+        }
     }
 }

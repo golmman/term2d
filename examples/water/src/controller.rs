@@ -1,4 +1,4 @@
-use term2d::{point::Point, view::screen::DefaultScreen, Controller, Event, Key};
+use term2d::{view::screen::DefaultScreen, Controller, Event, Key};
 
 use crate::{renderer::Renderer, state::State};
 
@@ -11,7 +11,7 @@ impl DotController {
     pub fn new() -> Self {
         Self {
             renderer: Renderer::new(),
-            state: State::new(&Point::new(50, 20)),
+            state: State::new(),
         }
     }
 }
@@ -24,6 +24,7 @@ impl Controller for DotController {
                 Key::Ctrl('c') => return false,
 
                 Key::Char(' ') => self.state.toggle_dirt(),
+                Key::Char('w') => self.state.add_droplet(),
 
                 Key::Char('h') => self.state.move_cursor_left(),
                 Key::Char('l') => self.state.move_cursor_right(),
@@ -33,7 +34,9 @@ impl Controller for DotController {
                 _ => {}
             },
             Event::Resize => {}
-            Event::Elapse => {}
+            Event::Elapse => {
+                self.state.world.simulate_water();
+            }
         }
 
         self.renderer.draw(&self.state);

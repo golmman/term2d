@@ -4,6 +4,7 @@ pub mod controller;
 pub mod random;
 pub mod renderer;
 pub mod state;
+pub mod water_rules;
 pub mod world;
 
 fn main() {
