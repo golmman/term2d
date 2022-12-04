@@ -1,5 +1,3 @@
-use term2d::point::Point;
-
 use crate::{random::Random, world::Droplet};
 
 pub fn setup_water_rules() -> Vec<fn(&Droplet, &mut Random) -> Droplet> {
@@ -137,27 +135,21 @@ pub fn setup_water_rules() -> Vec<fn(&Droplet, &mut Random) -> Droplet> {
 }
 
 fn stay_or_move_left(d: &Droplet, r: &mut Random) -> Droplet {
-    let pos = if r.next() % 20 == 0 {
+    let pos = if r.next() % 2 == 0 {
         d.pos.left()
     } else {
         d.pos.clone()
     };
-    Droplet {
-        pos,
-        vel: Point::new(0, 0),
-    }
+    d.copy_move(&pos, r)
 }
 
 fn stay_or_move_right(d: &Droplet, r: &mut Random) -> Droplet {
-    let pos = if r.next() % 20 == 0 {
+    let pos = if r.next() % 2 == 0 {
         d.pos.right()
     } else {
         d.pos.clone()
     };
-    Droplet {
-        pos,
-        vel: Point::new(0, 0),
-    }
+    d.copy_move(&pos, r)
 }
 
 fn stay_or_move_left_or_right(d: &Droplet, r: &mut Random) -> Droplet {
@@ -170,31 +162,19 @@ fn stay_or_move_left_or_right(d: &Droplet, r: &mut Random) -> Droplet {
     } else {
         d.pos.clone()
     };
-    Droplet {
-        pos,
-        vel: Point::new(0, 0),
-    }
+    d.copy_move(&pos, r)
 }
 
-fn stay(d: &Droplet, _r: &mut Random) -> Droplet {
-    Droplet {
-        pos: d.pos.clone(),
-        vel: Point::new(0, 0),
-    }
+fn stay(d: &Droplet, r: &mut Random) -> Droplet {
+    d.copy_stay(r)
 }
 
-fn fall_left(d: &Droplet, _r: &mut Random) -> Droplet {
-    Droplet {
-        pos: d.pos.down_left(),
-        vel: Point::new(0, 0),
-    }
+fn fall_left(d: &Droplet, r: &mut Random) -> Droplet {
+    d.copy_move(&d.pos.down_left(), r)
 }
 
-fn fall_right(d: &Droplet, _r: &mut Random) -> Droplet {
-    Droplet {
-        pos: d.pos.down_right(),
-        vel: Point::new(0, 0),
-    }
+fn fall_right(d: &Droplet, r: &mut Random) -> Droplet {
+    d.copy_move(&d.pos.down_right(), r)
 }
 
 fn fall_left_or_right(d: &Droplet, r: &mut Random) -> Droplet {
@@ -203,15 +183,9 @@ fn fall_left_or_right(d: &Droplet, r: &mut Random) -> Droplet {
     } else {
         d.pos.down_left()
     };
-    Droplet {
-        pos,
-        vel: Point::new(0, 0),
-    }
+    d.copy_move(&pos, r)
 }
 
-fn fall_straight(d: &Droplet, _r: &mut Random) -> Droplet {
-    Droplet {
-        pos: d.pos.down(),
-        vel: Point::new(0, 0),
-    }
+fn fall_straight(d: &Droplet, r: &mut Random) -> Droplet {
+    d.copy_move(&d.pos.down(), r)
 }

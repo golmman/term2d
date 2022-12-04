@@ -1,6 +1,6 @@
 use term2d::point::Point;
 
-use crate::world::{PixelType, World, Droplet};
+use crate::world::{PixelType, World};
 
 pub struct State {
     pub cursor: Point,
@@ -23,10 +23,11 @@ impl State {
             self.cursor.y - self.world.pos.y,
         );
 
-        if self.world.get_type(&p) == PixelType::Empty {
-            self.world.set_pixel(&p, PixelType::Dirt);
-        } else {
-            self.world.set_pixel(&p, PixelType::Empty);
+        match self.world.get_type(&p) {
+            Some(PixelType::Dirt) => self.world.set_pixel(&p, PixelType::Empty),
+            Some(PixelType::Empty) => self.world.set_pixel(&p, PixelType::Dirt),
+            Some(_) => {}
+            None => {}
         }
     }
 
@@ -36,7 +37,7 @@ impl State {
             self.cursor.y - self.world.pos.y,
         );
 
-        self.world.water.push(Droplet::new(&p));
+        self.world.add_droplet(&p);
     }
 
     pub fn move_cursor_left(&mut self) {

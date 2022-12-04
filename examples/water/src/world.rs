@@ -1,20 +1,23 @@
-use std::{
-    cmp::{max, min},
-    ops::Range,
-};
+use std::ops::Range;
 
 use term2d::{color::Rgba, model::image::Image, point::Point};
 
-use crate::random::Random;
+use crate::{random::Random, water_rules::setup_water_rules};
 
-struct RgbRange {
+pub const RANGE_DIRT: RgbRange = RgbRange::new(66..72, 54..58, 33..35);
+pub const RANGE_EMPTY: RgbRange = RgbRange::new(30..40, 30..40, 30..40);
+pub const RANGE_WATER_STAY: RgbRange = RgbRange::new(20..30, 40..55, 130..150);
+pub const RANGE_WATER_MOVE: RgbRange = RgbRange::new(100..110, 110..125, 200..220);
+
+#[derive(Clone)]
+pub struct RgbRange {
     pub r: Range<u8>,
     pub g: Range<u8>,
     pub b: Range<u8>,
 }
 
 impl RgbRange {
-    fn new(r: Range<u8>, g: Range<u8>, b: Range<u8>) -> Self {
+    const fn new(r: Range<u8>, g: Range<u8>, b: Range<u8>) -> Self {
         Self { r, g, b }
     }
 
@@ -26,13 +29,62 @@ impl RgbRange {
             a: 255,
         }
     }
+
+    pub fn get_center(&self) -> Rgba {
+        Rgba {
+            r: ((self.r.end as u32 + self.r.start as u32) / 2) as u8,
+            g: ((self.g.end as u32 + self.g.start as u32) / 2) as u8,
+            b: ((self.b.end as u32 + self.b.start as u32) / 2) as u8,
+            a: 255,
+        }
+    }
+
+    pub fn change_in_range(&self, rgba: &Rgba, random: &mut Random) -> Rgba {
+        let r = RgbRange::change_in_range_channel(&self.r, rgba.r, random);
+        let g = RgbRange::change_in_range_channel(&self.g, rgba.g, random);
+        let b = RgbRange::change_in_range_channel(&self.b, rgba.b, random);
+        Rgba { r, g, b, a: 255 }
+    }
+
+    fn change_in_range_channel(
+        range: &Range<u8>,
+        channel_intensity: u8,
+        random: &mut Random,
+    ) -> u8 {
+        let new_intensity: i32 = if channel_intensity >= range.end {
+            channel_intensity as i32 - 3
+        } else if channel_intensity < range.start {
+            channel_intensity as i32 + 3
+        } else {
+            channel_intensity as i32 + ((random.next() % 7) as i32 - 3)
+        };
+
+        if new_intensity < 0 {
+            0
+        } else if new_intensity > 255 {
+            255
+        } else {
+            new_intensity as u8
+        }
+    }
+}
+
+impl Default for RgbRange {
+    fn default() -> Self {
+        Self {
+            r: Default::default(),
+            g: Default::default(),
+            b: Default::default(),
+        }
+    }
 }
 
 impl From<PixelType> for RgbRange {
     fn from(pixel_type: PixelType) -> Self {
         match pixel_type {
-            PixelType::Dirt => RgbRange::new(66..72, 54..58, 33..35),
-            PixelType::Empty => RgbRange::new(30..40, 30..40, 30..40),
+            PixelType::Dirt => RANGE_DIRT,
+            PixelType::Empty => RANGE_EMPTY,
+            PixelType::Water => RgbRange::default(),
         }
     }
 }
@@ -41,45 +93,39 @@ impl From<PixelType> for RgbRange {
 pub enum PixelType {
     Dirt,
     Empty,
+    Water,
 }
 
-const DROPLET_SCALE: i32 = 100;
-
 pub struct Droplet {
-    pub pos: Point, // centi
-    pub vel: Point,
+    pub pos: Point,
+    pub rgba: Rgba,
+    pub rgb_range: RgbRange,
 }
 
 impl Droplet {
     pub fn new(p: &Point) -> Self {
         Self {
-            pos: Point::new(p.x * DROPLET_SCALE, p.y * DROPLET_SCALE),
-            vel: Point::new(0, 0),
+            pos: p.clone(),
+            rgba: RANGE_WATER_STAY.get_center(),
+            rgb_range: RANGE_WATER_STAY,
         }
     }
 
-    pub fn get_pos(&self) -> Point {
-        Point::new(self.pos.x / DROPLET_SCALE, self.pos.y / DROPLET_SCALE)
+    pub fn copy_move(&self, p: &Point, r: &mut Random) -> Self {
+        let rgba = RANGE_WATER_MOVE.change_in_range(&self.rgba, r);
+        Self {
+            pos: p.clone(),
+            rgba,
+            rgb_range: RANGE_WATER_MOVE,
+        }
     }
 
-    pub fn limit_vel(&mut self) {
-        //if self.vel.x < -DROPLET_SCALE {
-        //    self.vel.x = -DROPLET_SCALE;
-        //}
-        //if self.vel.x > DROPLET_SCALE {
-        //    self.vel.x = DROPLET_SCALE;
-        //}
-        //if self.vel.y < -DROPLET_SCALE {
-        //    self.vel.y = -DROPLET_SCALE;
-        //}
-        //if self.vel.y > DROPLET_SCALE {
-        //    self.vel.y = DROPLET_SCALE;
-        //}
-
-        let vel = ((self.vel.x * self.vel.x + self.vel.y * self.vel.y) as f32).sqrt();
-        if vel > DROPLET_SCALE as f32 {
-            self.vel.x = ((DROPLET_SCALE * self.vel.x) as f32 / vel) as i32;
-            self.vel.y = ((DROPLET_SCALE * self.vel.y) as f32 / vel) as i32;
+    pub fn copy_stay(&self, r: &mut Random) -> Self {
+        let rgba = RANGE_WATER_STAY.change_in_range(&self.rgba, r);
+        Self {
+            pos: self.pos.clone(),
+            rgba,
+            rgb_range: RANGE_WATER_STAY,
         }
     }
 }
@@ -90,6 +136,7 @@ pub struct World {
     pub random: Random,
     pub types: Vec<PixelType>,
     pub water: Vec<Droplet>,
+    pub water_rules: Vec<fn(&Droplet, &mut Random) -> Droplet>,
 }
 
 impl World {
@@ -108,6 +155,7 @@ impl World {
             random,
             types: vec![PixelType::Empty; total_pixels],
             water: Vec::new(),
+            water_rules: setup_water_rules(),
         };
 
         for i in 0..total_pixels as i32 {
@@ -124,35 +172,92 @@ impl World {
         world
     }
 
+    fn get_index(&self, p: &Point) -> Option<usize> {
+        if p.x < 0 || p.x >= self.image.size.width() {
+            return None;
+        }
+
+        if p.y < 0 || p.y >= self.image.size.height() {
+            return None;
+        }
+
+        Some((p.x + p.y * self.image.size.width()) as usize)
+    }
+
     pub fn set_pixel(&mut self, p: &Point, pixel_type: PixelType) {
+        let Some(index) = self.get_index(p) else {
+            return;
+        };
+
         let rgba = RgbRange::from(pixel_type).random_rgb(&mut self.random);
-        let index = (p.x + p.y * self.image.size.width()) as usize;
 
         self.image.pixels[index] = rgba;
         self.types[index] = pixel_type;
     }
 
-    pub fn get_type(&mut self, p: &Point) -> PixelType {
-        let index = (p.x + p.y * self.image.size.width()) as usize;
-        self.types[index]
+    pub fn get_type(&self, p: &Point) -> Option<PixelType> {
+        let Some(index) = self.get_index(p) else {
+            return None;
+        };
+        Some(self.types[index])
+    }
+
+    pub fn add_droplet(&mut self, p: &Point) {
+        let Some(index) = self.get_index(p) else {
+            return;
+        };
+
+        if self.types[index] != PixelType::Empty {
+            return;
+        }
+
+        self.water.push(Droplet::new(p));
+        self.types[index] = PixelType::Water;
     }
 
     pub fn simulate_water(&mut self) {
         for i in 0..self.water.len() {
-            if let Some(droplet) = self.simulate_droplet_collisions(&self.water[i]) {
-                self.water[i] = droplet;
+            let Some(old_index) = self.get_index(&self.water[i].pos) else {
+                // TODO
+                //self.water.remove(i);
                 continue;
-            }
+            };
+            self.types[old_index] = PixelType::Empty;
 
-            self.water[i].pos.x += self.water[i].vel.x;
-            self.water[i].pos.y += self.water[i].vel.y;
+            let neigh = self.get_droplet_neighborhood(&self.water[i]);
+            self.water[i] = self.water_rules[neigh](&self.water[i], &mut self.random);
 
-            self.water[i].vel.y += 10;
-            self.water[i].limit_vel();
+            let Some(new_index) = self.get_index(&self.water[i].pos) else {
+                //self.water.remove(i);
+                continue;
+            };
+            self.types[new_index] = PixelType::Water;
         }
     }
 
-    pub fn simulate_droplet_collisions(&self, droplet: &Droplet) -> Option<Droplet> {
-        None
+    fn get_droplet_neighborhood(&self, d: &Droplet) -> usize {
+        let mut neigh = 0;
+
+        if self.get_type(&d.pos.down_right()) != Some(PixelType::Empty) {
+            neigh += 1;
+        }
+
+        if self.get_type(&d.pos.down()) != Some(PixelType::Empty) {
+            neigh += 2;
+        }
+
+        if self.get_type(&d.pos.down_left()) != Some(PixelType::Empty) {
+            neigh += 4;
+        }
+
+        if self.get_type(&d.pos.right()) != Some(PixelType::Empty) {
+            neigh += 8;
+        }
+
+        if self.get_type(&d.pos.left()) != Some(PixelType::Empty) {
+            neigh += 16;
+        }
+
+        neigh
     }
 }
