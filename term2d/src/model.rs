@@ -1,2 +1,9 @@
+pub mod color;
+pub mod config;
+pub mod event;
 pub mod image;
+pub mod key;
+pub mod point;
+pub mod rect;
+pub mod rgba;
 pub mod video;

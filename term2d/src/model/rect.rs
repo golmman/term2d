@@ -1,4 +1,4 @@
-use crate::point::Point;
+use super::point::Point;
 
 #[derive(Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Rect {

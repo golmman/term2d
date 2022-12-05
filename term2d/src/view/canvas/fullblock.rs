@@ -1,8 +1,7 @@
-use crate::{
-    color::{Color, Rgba},
-    point::Point,
-    view::screen::DefaultScreen,
-};
+use crate::model::color::Color;
+use crate::model::point::Point;
+use crate::model::rgba::Rgba;
+use crate::view::screen::DefaultScreen;
 
 use super::Canvas;
 

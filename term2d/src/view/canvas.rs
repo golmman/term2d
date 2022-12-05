@@ -1,10 +1,10 @@
-use crate::{
-    color::{Color, Rgba},
-    model::{image::Image, video::Video},
-    point::Point,
-    rect::Rect,
-    view::screen::DefaultScreen,
-};
+use crate::model::color::Color;
+use crate::model::image::Image;
+use crate::model::point::Point;
+use crate::model::rect::Rect;
+use crate::model::rgba::Rgba;
+use crate::model::video::Video;
+use crate::view::screen::DefaultScreen;
 
 pub mod fullblock;
 pub mod halfblock;

@@ -5,9 +5,9 @@ use std::io::Write;
 use termion::raw::IntoRawMode;
 use termion::raw::RawTerminal;
 
-use crate::color::Color;
-use crate::color::Rgba;
-use crate::point::Point;
+use crate::model::color::Color;
+use crate::model::point::Point;
+use crate::model::rgba::Rgba;
 
 pub type DefaultScreen = Screen<RawTerminal<Stdout>>;
 

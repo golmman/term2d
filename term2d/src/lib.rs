@@ -1,36 +1,18 @@
-use std::{
-    io::stdin,
-    sync::mpsc::{sync_channel, SyncSender},
-    thread::{self, sleep},
-    time::Duration,
-};
+use std::io::stdin;
+use std::sync::mpsc::sync_channel;
+use std::sync::mpsc::SyncSender;
+use std::thread;
+use std::thread::sleep;
+use std::time::Duration;
 
+use controller::Controller;
+use model::event::Event;
 use termion::input::TermRead;
 use view::screen::DefaultScreen;
 
-pub mod color;
+pub mod controller;
 pub mod model;
-pub mod point;
-pub mod rect;
 pub mod view;
-
-pub type Key = termion::event::Key;
-
-#[derive(Copy, Clone, Debug)]
-pub enum Event {
-    Key(Key),
-    Resize,
-    Elapse,
-}
-
-pub struct Config {
-    pub fps: u16,
-}
-
-pub trait Controller {
-    fn update(&mut self, event: Event) -> bool;
-    fn init(&mut self, screen: DefaultScreen) -> Config;
-}
 
 pub fn run<C: Controller>(mut controller: C) {
     let screen = DefaultScreen::new();
@@ -40,12 +22,10 @@ pub fn run<C: Controller>(mut controller: C) {
 
     let elapse_sender = sender.clone();
     let key_sender = sender.clone();
-    let interrupt_sender = sender.clone();
     let resize_sender = sender.clone();
 
     thread::spawn(move || send_elapse_events(elapse_sender, config.fps));
     thread::spawn(move || send_key_events(key_sender));
-    thread::spawn(move || send_interrupt_events(interrupt_sender));
     thread::spawn(move || send_resize_events(resize_sender));
 
     controller.update(Event::Resize);
@@ -75,17 +55,6 @@ fn send_key_events(sender: SyncSender<Event>) {
     for key in stdin.keys().flatten() {
         let _ = sender.send(Event::Key(key));
     }
-}
-
-fn send_interrupt_events(sync_sender: SyncSender<Event>) {
-    // this only exists as a fail safe, terminals in raw mode have to
-    // interpret ctrl+c during normal key event handling, so this does
-    // nothing in raw mode
-    let _ = unsafe {
-        signal_hook::low_level::register(signal_hook::consts::SIGINT, move || {
-            sync_sender.send(Event::Key(Key::Char('q'))).unwrap();
-        })
-    };
 }
 
 fn send_resize_events(sync_sender: SyncSender<Event>) {

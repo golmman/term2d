@@ -1,4 +1,5 @@
-use crate::{color::Rgba, point::Point};
+use super::point::Point;
+use super::rgba::Rgba;
 
 #[derive(Clone)]
 pub struct Image {
