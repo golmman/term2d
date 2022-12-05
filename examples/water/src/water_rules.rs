@@ -1,4 +1,5 @@
-use crate::{random::Random, world::Droplet};
+use crate::random::Random;
+use crate::world::Droplet;
 
 pub fn setup_water_rules() -> Vec<fn(&Droplet, &mut Random) -> Droplet> {
     let mut rules: Vec<fn(&Droplet, &mut Random) -> Droplet> = vec![fall_straight; 32];

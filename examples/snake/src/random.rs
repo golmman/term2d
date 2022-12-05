@@ -1,7 +1,6 @@
-use std::{
-    ops::Range,
-    time::{SystemTime, UNIX_EPOCH},
-};
+use std::ops::Range;
+use std::time::SystemTime;
+use std::time::UNIX_EPOCH;
 
 // https://en.wikipedia.org/wiki/Linear_congruential_generator#Parameters_in_common_use
 const A: u64 = 48271;

@@ -1,6 +1,7 @@
-use term2d::point::Point;
+use term2d::model::point::Point;
 
-use crate::world::{PixelType, World};
+use crate::world::PixelType;
+use crate::world::World;
 
 pub struct State {
     pub cursor: Point,

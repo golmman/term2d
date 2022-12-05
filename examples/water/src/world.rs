@@ -1,8 +1,11 @@
 use std::ops::Range;
 
-use term2d::{color::Rgba, model::image::Image, point::Point};
+use term2d::model::image::Image;
+use term2d::model::point::Point;
+use term2d::model::rgba::Rgba;
 
-use crate::{random::Random, water_rules::setup_water_rules};
+use crate::random::Random;
+use crate::water_rules::setup_water_rules;
 
 pub const RANGE_DIRT: RgbRange = RgbRange::new(66..72, 54..58, 33..35);
 pub const RANGE_EMPTY: RgbRange = RgbRange::new(30..40, 30..40, 30..40);

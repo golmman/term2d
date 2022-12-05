@@ -1,10 +1,13 @@
-use term2d::{
-    color::{Color, Rgba},
-    point::Point,
-    view::canvas::{halfblock::HalfblockCanvas, Canvas},
-    view::screen::DefaultScreen,
-    Controller, Event, Key,
-};
+use term2d::controller::Controller;
+use term2d::model::color::Color;
+use term2d::model::config::Config;
+use term2d::model::event::Event;
+use term2d::model::key::Key;
+use term2d::model::point::Point;
+use term2d::model::rgba::Rgba;
+use term2d::view::canvas::halfblock::HalfblockCanvas;
+use term2d::view::canvas::Canvas;
+use term2d::view::screen::DefaultScreen;
 
 struct DotController {
     frame: u32,
@@ -40,9 +43,9 @@ impl Controller for DotController {
         true
     }
 
-    fn init(&mut self, screen: DefaultScreen) -> term2d::Config {
+    fn init(&mut self, screen: DefaultScreen) -> Config {
         self.canvas.init(screen);
-        term2d::Config { fps: 10 }
+        Config { fps: 10 }
     }
 }
 

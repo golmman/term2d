@@ -3,17 +3,20 @@ use image::AnimationDecoder;
 use image::GenericImageView;
 use std::fs::File;
 use std::path::Path;
+use term2d::model::config::Config;
 use term2d::model::image::Image;
 use term2d::model::video::Video;
 
-use term2d::{
-    color::{Color, Rgba},
-    point::Point,
-    rect::Rect,
-    view::canvas::{halfblock::HalfblockCanvas, Canvas},
-    view::screen::DefaultScreen,
-    Controller, Event, Key,
-};
+use term2d::controller::Controller;
+use term2d::model::color::Color;
+use term2d::model::event::Event;
+use term2d::model::key::Key;
+use term2d::model::point::Point;
+use term2d::model::rect::Rect;
+use term2d::model::rgba::Rgba;
+use term2d::view::canvas::halfblock::HalfblockCanvas;
+use term2d::view::canvas::Canvas;
+use term2d::view::screen::DefaultScreen;
 
 struct AnimationController {
     cat_video: Video,
@@ -89,9 +92,9 @@ impl Controller for AnimationController {
         true
     }
 
-    fn init(&mut self, screen: DefaultScreen) -> term2d::Config {
+    fn init(&mut self, screen: DefaultScreen) -> Config {
         self.canvas.init(screen);
-        term2d::Config { fps: 10 }
+        Config { fps: 10 }
     }
 }
 

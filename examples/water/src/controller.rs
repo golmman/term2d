@@ -1,6 +1,11 @@
-use term2d::{view::screen::DefaultScreen, Controller, Event, Key};
+use term2d::controller::Controller;
+use term2d::model::config::Config;
+use term2d::model::event::Event;
+use term2d::model::key::Key;
+use term2d::view::screen::DefaultScreen;
 
-use crate::{renderer::Renderer, state::State};
+use crate::renderer::Renderer;
+use crate::state::State;
 
 pub struct DotController {
     renderer: Renderer,
@@ -46,8 +51,8 @@ impl Controller for DotController {
         true
     }
 
-    fn init(&mut self, screen: DefaultScreen) -> term2d::Config {
+    fn init(&mut self, screen: DefaultScreen) -> Config {
         self.renderer.init(screen);
-        term2d::Config { fps: 10 }
+        Config { fps: 10 }
     }
 }

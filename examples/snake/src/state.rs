@@ -1,4 +1,4 @@
-use term2d::point::Point;
+use term2d::model::point::Point;
 
 use crate::random::Random;
 

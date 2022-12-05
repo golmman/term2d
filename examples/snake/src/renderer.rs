@@ -1,9 +1,9 @@
-use term2d::{
-    color::{Color, Rgba},
-    point::Point,
-    view::canvas::{halfblock::HalfblockCanvas, Canvas},
-    view::screen::DefaultScreen,
-};
+use term2d::model::color::Color;
+use term2d::model::point::Point;
+use term2d::model::rgba::Rgba;
+use term2d::view::canvas::halfblock::HalfblockCanvas;
+use term2d::view::canvas::Canvas;
+use term2d::view::screen::DefaultScreen;
 
 use crate::state::State;
 
