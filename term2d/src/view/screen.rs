@@ -5,6 +5,10 @@ use std::io::Write;
 use termion::raw::IntoRawMode;
 use termion::raw::RawTerminal;
 
+use crate::model::ansiesc::CLEAR_ALL;
+use crate::model::ansiesc::COLOR_RESET;
+use crate::model::ansiesc::CURSOR_GOTO_1_1;
+use crate::model::ansiesc::CURSOR_SHOW;
 use crate::model::color::Color;
 use crate::model::point::Point;
 use crate::model::rgba::Rgba;
@@ -12,7 +16,7 @@ use crate::model::rgba::Rgba;
 pub type DefaultScreen = Screen<RawTerminal<Stdout>>;
 
 #[derive(Debug, Clone)]
-pub struct Pixel {
+struct Pixel {
     pub ch: char,
     pub color: Color,
 }
@@ -36,9 +40,11 @@ impl From<char> for Pixel {
 }
 
 pub struct Screen<W: Write> {
+    drop_string: String,
     main_display: W,
-    prelude_buffer: String,
     pixel_buffer: Vec<Pixel>,
+    prelude_buffer: String,
+
     pub size: Point,
 }
 
@@ -159,9 +165,13 @@ impl<W: Write> From<W> for Screen<W> {
         let pixel_buffer = vec![Pixel::from(' '); buffer_size];
 
         Self {
+            drop_string: format!(
+                "{}{}{}{}",
+                COLOR_RESET, CLEAR_ALL, CURSOR_GOTO_1_1, CURSOR_SHOW,
+            ),
             main_display: buffer,
-            prelude_buffer,
             pixel_buffer,
+            prelude_buffer,
             size: Point::new(cols as i32, rows as i32),
         }
     }
@@ -169,15 +179,7 @@ impl<W: Write> From<W> for Screen<W> {
 
 impl<W: Write> Drop for Screen<W> {
     fn drop(&mut self) {
-        write!(
-            self.main_display,
-            "{}{}{}{}",
-            Color::RESET,
-            termion::clear::All,
-            termion::cursor::Goto(1, 1),
-            termion::cursor::Show,
-        )
-        .unwrap();
+        write!(self.main_display, "{}", self.drop_string,).unwrap();
 
         self.main_display.flush().unwrap();
     }

@@ -12,3 +12,8 @@ Make sure to format, test and check everything:
 ```
 cargo +nightly fmt && cargo test -p term2d && cargo check
 ```
+
+Publish with:
+```
+cargo publish -p term2d
+```

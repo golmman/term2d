@@ -31,6 +31,34 @@ pub trait Canvas: Sized {
         }
     }
 
+    fn draw_line(&mut self, p1: &Point, p2: &Point, c: &Rgba) {
+        let mut x = p1.x;
+        let mut y = p1.y;
+        let dx = (p2.x - p1.x).abs();
+        let dy = (p2.y - p1.y).abs();
+        let sx = if p1.x < p2.x { 1 } else { -1 };
+        let sy = if p1.y < p2.y { 1 } else { -1 };
+        let mut err = if dx > dy { dx } else { -dy } / 2;
+
+        loop {
+            self.draw_pixel(&Point::new(x, y), c);
+
+            if x == p2.x && y == p2.y {
+                break;
+            }
+
+            let e2 = err;
+            if e2 > -dx {
+                err -= dy;
+                x += sx;
+            }
+            if e2 < dy {
+                err += dx;
+                y += sy;
+            }
+        }
+    }
+
     fn draw_image(&mut self, p: &Point, image: &Image) {
         for y in 0..image.size.height() {
             for x in 0..image.size.width() {

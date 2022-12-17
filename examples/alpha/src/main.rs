@@ -66,6 +66,9 @@ impl Controller for AlphaController {
             },
         );
 
+        self.canvas
+            .draw_line(&Point::new(10, 10), &Point::new(30, 17), &Rgba::red());
+
         self.canvas.draw_text(
             &Point::new(2, 18),
             &Color {

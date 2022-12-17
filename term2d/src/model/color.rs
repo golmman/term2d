@@ -18,8 +18,6 @@ impl Default for Color {
 }
 
 impl Color {
-    pub const RESET: &'static str = "\x1b[0m";
-
     pub fn text() -> Self {
         Self {
             bg: Rgba::default(),
