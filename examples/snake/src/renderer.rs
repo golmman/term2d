@@ -3,12 +3,11 @@ use term2d::model::point::Point;
 use term2d::model::rgba::Rgba;
 use term2d::view::canvas::halfblock::HalfblockCanvas;
 use term2d::view::canvas::Canvas;
-use term2d::view::screen::DefaultScreen;
 
 use crate::state::State;
 
 pub struct SnakeRenderer {
-    canvas: HalfblockCanvas,
+    pub canvas: HalfblockCanvas,
 }
 
 impl SnakeRenderer {
@@ -16,10 +15,6 @@ impl SnakeRenderer {
         Self {
             canvas: HalfblockCanvas::new(),
         }
-    }
-
-    pub fn init(&mut self, screen: DefaultScreen) {
-        self.canvas.init(screen);
     }
 
     pub fn resize(&mut self) -> Point {

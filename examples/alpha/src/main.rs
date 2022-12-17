@@ -1,6 +1,5 @@
 use term2d::controller::Controller;
 use term2d::model::color::Color;
-use term2d::model::config::Config;
 use term2d::model::event::Event;
 use term2d::model::key::Key;
 use term2d::model::point::Point;
@@ -8,7 +7,6 @@ use term2d::model::rect::Rect;
 use term2d::model::rgba::Rgba;
 use term2d::view::canvas::halfblock::HalfblockCanvas;
 use term2d::view::canvas::Canvas;
-use term2d::view::screen::DefaultScreen;
 
 struct AlphaController {
     frame: u32,
@@ -24,7 +22,7 @@ impl AlphaController {
     }
 }
 
-impl Controller for AlphaController {
+impl Controller<HalfblockCanvas> for AlphaController {
     fn update(&mut self, event: Event) -> bool {
         match event {
             Event::Key(key) => match key {
@@ -90,9 +88,8 @@ impl Controller for AlphaController {
         true
     }
 
-    fn init(&mut self, screen: DefaultScreen) -> Config {
-        self.canvas.init(screen);
-        Config { fps: 10 }
+    fn get_canvas(&mut self) -> &mut HalfblockCanvas {
+        &mut self.canvas
     }
 }
 

@@ -6,20 +6,25 @@ use std::thread::sleep;
 use std::time::Duration;
 
 use controller::Controller;
+use model::config::Config;
 use model::event::Event;
 use termion::input::TermRead;
+use view::canvas::Canvas;
 use view::screen::DefaultScreen;
 
 pub mod controller;
 pub mod model;
 pub mod view;
 
-pub fn run<C: Controller>(mut controller: C) {
+pub fn run<T: Canvas, C: Controller<T>>(controller: C) {
+    run_with_config(controller, Config::default());
+}
+
+pub fn run_with_config<T: Canvas, C: Controller<T>>(mut controller: C, config: Config) {
     let screen = DefaultScreen::new();
-    let config = controller.init(screen);
+    controller.get_canvas().init(screen);
 
     let (sender, receiver) = sync_channel::<Event>(1024);
-
     let elapse_sender = sender.clone();
     let key_sender = sender.clone();
     let resize_sender = sender.clone();

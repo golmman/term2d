@@ -1,8 +1,7 @@
-use crate::model::config::Config;
 use crate::model::event::Event;
-use crate::view::screen::DefaultScreen;
+use crate::view::canvas::Canvas;
 
-pub trait Controller {
+pub trait Controller<T: Canvas> {
     fn update(&mut self, event: Event) -> bool;
-    fn init(&mut self, screen: DefaultScreen) -> Config;
+    fn get_canvas(&mut self) -> &mut T;
 }

@@ -1,10 +1,9 @@
 use crate::renderer::SnakeRenderer;
 use crate::state::State;
 use term2d::controller::Controller;
-use term2d::model::config::Config;
 use term2d::model::event::Event;
 use term2d::model::key::Key;
-use term2d::view::screen::DefaultScreen;
+use term2d::view::canvas::halfblock::HalfblockCanvas;
 
 pub struct SnakeController {
     renderer: SnakeRenderer,
@@ -25,7 +24,7 @@ impl SnakeController {
     }
 }
 
-impl Controller for SnakeController {
+impl Controller<HalfblockCanvas> for SnakeController {
     fn update(&mut self, event: Event) -> bool {
         match event {
             Event::Key(key) => match key {
@@ -52,8 +51,7 @@ impl Controller for SnakeController {
         true
     }
 
-    fn init(&mut self, screen: DefaultScreen) -> Config {
-        self.renderer.init(screen);
-        Config { fps: 10 }
+    fn get_canvas(&mut self) -> &mut HalfblockCanvas {
+        &mut self.renderer.canvas
     }
 }

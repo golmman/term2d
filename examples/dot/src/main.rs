@@ -1,20 +1,18 @@
 use term2d::controller::Controller;
 use term2d::model::color::Color;
-use term2d::model::config::Config;
 use term2d::model::event::Event;
 use term2d::model::key::Key;
 use term2d::model::point::Point;
 use term2d::model::rgba::Rgba;
 use term2d::view::canvas::halfblock::HalfblockCanvas;
 use term2d::view::canvas::Canvas;
-use term2d::view::screen::DefaultScreen;
 
 struct DotController {
     frame: u32,
     canvas: HalfblockCanvas,
 }
 
-impl Controller for DotController {
+impl Controller<HalfblockCanvas> for DotController {
     fn update(&mut self, event: Event) -> bool {
         match event {
             Event::Key(key) => match key {
@@ -43,9 +41,8 @@ impl Controller for DotController {
         true
     }
 
-    fn init(&mut self, screen: DefaultScreen) -> Config {
-        self.canvas.init(screen);
-        Config { fps: 10 }
+    fn get_canvas(&mut self) -> &mut HalfblockCanvas {
+        &mut self.canvas
     }
 }
 
