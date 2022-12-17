@@ -40,7 +40,7 @@ impl From<char> for Pixel {
 }
 
 pub struct Screen<W: Write> {
-    drop_string: String,
+    drop_strings: Vec<String>,
     main_display: W,
     pixel_buffer: Vec<Pixel>,
     prelude_buffer: String,
@@ -49,8 +49,10 @@ pub struct Screen<W: Write> {
 }
 
 impl DefaultScreen {
-    pub fn new() -> Self {
-        Screen::from(stdout().into_raw_mode().unwrap())
+    pub fn new(drop_strings: Vec<String>) -> Self {
+        let mut screen = Screen::from(stdout().into_raw_mode().unwrap());
+        screen.drop_strings = drop_strings;
+        screen
     }
 
     pub fn resize(&mut self) -> Point {
@@ -165,10 +167,12 @@ impl<W: Write> From<W> for Screen<W> {
         let pixel_buffer = vec![Pixel::from(' '); buffer_size];
 
         Self {
-            drop_string: format!(
-                "{}{}{}{}",
-                COLOR_RESET, CLEAR_ALL, CURSOR_GOTO_1_1, CURSOR_SHOW,
-            ),
+            drop_strings: vec![
+                COLOR_RESET.to_string(),
+                CLEAR_ALL.to_string(),
+                CURSOR_GOTO_1_1.to_string(),
+                CURSOR_SHOW.to_string(),
+            ],
             main_display: buffer,
             pixel_buffer,
             prelude_buffer,
@@ -179,7 +183,7 @@ impl<W: Write> From<W> for Screen<W> {
 
 impl<W: Write> Drop for Screen<W> {
     fn drop(&mut self) {
-        write!(self.main_display, "{}", self.drop_string,).unwrap();
+        write!(self.main_display, "{}", self.drop_strings.join("")).unwrap();
 
         self.main_display.flush().unwrap();
     }

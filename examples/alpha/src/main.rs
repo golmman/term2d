@@ -1,5 +1,10 @@
 use term2d::controller::Controller;
+use term2d::model::ansiesc::CLEAR_ALL;
+use term2d::model::ansiesc::COLOR_RESET;
+use term2d::model::ansiesc::CURSOR_GOTO_1_1;
+use term2d::model::ansiesc::CURSOR_SHOW;
 use term2d::model::color::Color;
+use term2d::model::config::Config;
 use term2d::model::event::Event;
 use term2d::model::key::Key;
 use term2d::model::point::Point;
@@ -95,5 +100,16 @@ impl Controller<HalfblockCanvas> for AlphaController {
 
 fn main() {
     let controller = AlphaController::new();
-    term2d::run(controller);
+    term2d::run_with_config(
+        controller,
+        Config {
+            fps: 10,
+            screen_drop_strings: vec![
+                COLOR_RESET.to_string(),
+                CLEAR_ALL.to_string(),
+                CURSOR_GOTO_1_1.to_string(),
+                CURSOR_SHOW.to_string(),
+            ],
+        },
+    );
 }
