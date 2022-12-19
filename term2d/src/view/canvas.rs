@@ -1,3 +1,4 @@
+use crate::model::circle::Circle;
 use crate::model::color::Color;
 use crate::model::image::Image;
 use crate::model::point::Point;
@@ -55,6 +56,54 @@ pub trait Canvas: Sized {
             if e2 < dy {
                 err += dx;
                 y += sy;
+            }
+        }
+    }
+
+    fn draw_circle(&mut self, circle: &Circle, rgba: &Rgba) {
+        let cx = circle.pos.x;
+        let cy = circle.pos.y;
+        let mut x = circle.radius;
+        let mut y = 0;
+        let mut decision_over_2 = 1 - x;
+
+        while y <= x {
+            self.draw_pixel(&Point::new(cx + x, cy + y), rgba);
+            self.draw_pixel(&Point::new(cx + y, cy + x), rgba);
+            self.draw_pixel(&Point::new(cx - y, cy + x), rgba);
+            self.draw_pixel(&Point::new(cx - x, cy + y), rgba);
+            self.draw_pixel(&Point::new(cx - x, cy - y), rgba);
+            self.draw_pixel(&Point::new(cx - y, cy - x), rgba);
+            self.draw_pixel(&Point::new(cx + y, cy - x), rgba);
+            self.draw_pixel(&Point::new(cx + x, cy - y), rgba);
+            y += 1;
+            if decision_over_2 <= 0 {
+                decision_over_2 += 2 * y + 1;
+            } else {
+                x -= 1;
+                decision_over_2 += 2 * (y - x) + 1;
+            }
+        }
+    }
+
+    fn draw_circle_fill(&mut self, circle: &Circle, rgba: &Rgba) {
+        let cx = circle.pos.x;
+        let cy = circle.pos.y;
+        let radius = circle.radius;
+        let min_x = cx - radius;
+        let max_x = cx + radius;
+        let min_y = cy - radius;
+        let max_y = cy + radius;
+
+        for x in min_x..max_x {
+            for y in min_y..max_y {
+                let dx = (x as i32 - cx as i32).abs();
+                let dy = (y as i32 - cy as i32).abs();
+                let distance = dx * dx + dy * dy;
+
+                if distance < radius * radius {
+                    self.draw_pixel(&Point::new(x, y), rgba);
+                }
             }
         }
     }

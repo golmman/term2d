@@ -1,4 +1,5 @@
 pub mod ansiesc;
+pub mod circle;
 pub mod color;
 pub mod config;
 pub mod event;

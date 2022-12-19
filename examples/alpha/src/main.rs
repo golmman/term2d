@@ -3,6 +3,7 @@ use term2d::model::ansiesc::CLEAR_ALL;
 use term2d::model::ansiesc::COLOR_RESET;
 use term2d::model::ansiesc::CURSOR_GOTO_1_1;
 use term2d::model::ansiesc::CURSOR_SHOW;
+use term2d::model::circle::Circle;
 use term2d::model::color::Color;
 use term2d::model::config::Config;
 use term2d::model::event::Event;
@@ -69,9 +70,6 @@ impl Controller<HalfblockCanvas> for AlphaController {
             },
         );
 
-        self.canvas
-            .draw_line(&Point::new(10, 10), &Point::new(30, 17), &Rgba::red());
-
         self.canvas.draw_text(
             &Point::new(2, 18),
             &Color {
@@ -84,6 +82,23 @@ impl Controller<HalfblockCanvas> for AlphaController {
                 },
             },
             &format!("press 'q' to quit, frame: {}", self.frame),
+        );
+
+        self.canvas
+            .draw_line(&Point::new(10, 10), &Point::new(30, 17), &Rgba::red());
+
+        self.canvas.draw_circle_fill(
+            &Circle::new(70, 15, (self.frame % 27) as i32),
+            &Rgba::green(),
+        );
+        self.canvas.draw_circle(
+            &Circle::new(50, 15, (self.frame % 20) as i32),
+            &Rgba {
+                r: 0,
+                g: 0,
+                b: 255,
+                a: 128,
+            },
         );
 
         self.canvas.display();

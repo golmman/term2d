@@ -1,5 +1,6 @@
 use crate::model::color::Color;
 use crate::model::point::Point;
+use crate::model::rect::Rect;
 use crate::model::rgba::Rgba;
 use crate::view::screen::DefaultScreen;
 
@@ -37,7 +38,13 @@ impl Canvas for FullblockCanvas {
     }
 
     fn draw_pixel(&mut self, p: &Point, rgb: &Rgba) {
-        self.screen.as_mut().unwrap().draw_pixel(p, rgb);
+        let screen = self.screen.as_mut().unwrap();
+
+        if !Rect::from(&screen.size).contains(p) {
+            return;
+        }
+
+        screen.draw_pixel(p, rgb);
     }
 
     fn draw_char(&mut self, p: &Point, color: &Color, ch: char) {

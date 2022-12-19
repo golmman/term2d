@@ -1,5 +1,6 @@
 use crate::model::color::Color;
 use crate::model::point::Point;
+use crate::model::rect::Rect;
 use crate::model::rgba::Rgba;
 use crate::view::screen::DefaultScreen;
 
@@ -40,10 +41,16 @@ impl Canvas for HalfblockCanvas {
     }
 
     fn draw_pixel(&mut self, p: &Point, rgb: &Rgba) {
+        let screen = self.screen.as_mut().unwrap();
+        let screen_size = Point::new(screen.size.width(), 2 * screen.size.height());
         let x = p.x;
         let y = p.y / 2;
 
-        let old_color = self.screen.as_ref().unwrap().get_color(&Point::new(x, y));
+        if !Rect::from(&screen_size).contains(p) {
+            return;
+        }
+
+        let old_color = screen.get_color(&Point::new(x, y));
 
         let new_color = if p.y % 2 == 0 {
             Color {
@@ -57,10 +64,7 @@ impl Canvas for HalfblockCanvas {
             }
         };
 
-        self.screen
-            .as_mut()
-            .unwrap()
-            .draw_char(&Point::new(x, y), &new_color, HALF_BLOCK);
+        screen.draw_char(&Point::new(x, y), &new_color, HALF_BLOCK);
     }
 
     fn draw_char(&mut self, p: &Point, color: &Color, ch: char) {
