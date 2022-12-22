@@ -66,7 +66,7 @@ impl Controller<HalfblockCanvas> for AnimationController {
             ),
         );
 
-        self.canvas.draw_rect(
+        self.canvas.draw_rect_fill(
             &Rect::new(2, 2, 20, 20),
             &Rgba {
                 r: 96,

@@ -9,6 +9,7 @@ use term2d::model::config::Config;
 use term2d::model::event::Event;
 use term2d::model::key::Key;
 use term2d::model::point::Point;
+use term2d::model::polygon::Polygon;
 use term2d::model::rect::Rect;
 use term2d::model::rgba::Rgba;
 use term2d::view::canvas::halfblock::HalfblockCanvas;
@@ -16,6 +17,7 @@ use term2d::view::canvas::Canvas;
 
 struct AlphaController {
     frame: u32,
+    polygon: Polygon,
     canvas: HalfblockCanvas,
 }
 
@@ -23,6 +25,7 @@ impl AlphaController {
     fn new() -> Self {
         Self {
             frame: 0,
+            polygon: Polygon::new_star(),
             canvas: HalfblockCanvas::new(),
         }
     }
@@ -42,7 +45,8 @@ impl Controller<HalfblockCanvas> for AlphaController {
 
         self.canvas.clear();
 
-        self.canvas.draw_rect(
+        // 3 rectangles blended with alpha
+        self.canvas.draw_rect_fill(
             &Rect::new(3, 3, 15, 10),
             &Rgba {
                 r: 255,
@@ -51,7 +55,7 @@ impl Controller<HalfblockCanvas> for AlphaController {
                 a: 255,
             },
         );
-        self.canvas.draw_rect(
+        self.canvas.draw_rect_fill(
             &Rect::new(12, 5, 15, 10),
             &Rgba {
                 r: 0,
@@ -60,7 +64,7 @@ impl Controller<HalfblockCanvas> for AlphaController {
                 a: 128,
             },
         );
-        self.canvas.draw_rect(
+        self.canvas.draw_rect_fill(
             &Rect::new(8, 8, 15, 15),
             &Rgba {
                 r: 0,
@@ -70,6 +74,7 @@ impl Controller<HalfblockCanvas> for AlphaController {
             },
         );
 
+        // text
         self.canvas.draw_text(
             &Point::new(2, 18),
             &Color {
@@ -84,13 +89,17 @@ impl Controller<HalfblockCanvas> for AlphaController {
             &format!("press 'q' to quit, frame: {}", self.frame),
         );
 
+        // red line
         self.canvas
             .draw_line(&Point::new(10, 10), &Point::new(30, 17), &Rgba::red());
 
+        // filled green circle
         self.canvas.draw_circle_fill(
             &Circle::new(70, 15, (self.frame % 27) as i32),
             &Rgba::green(),
         );
+
+        // blue circle boundary
         self.canvas.draw_circle(
             &Circle::new(50, 15, (self.frame % 20) as i32),
             &Rgba {
@@ -100,6 +109,26 @@ impl Controller<HalfblockCanvas> for AlphaController {
                 a: 128,
             },
         );
+
+        // red rectangle
+        self.canvas.draw_rect(
+            &Rect::new(
+                100,
+                3,
+                17 + (10.0 * (self.frame as f32 / 7.0).sin()) as i32,
+                23,
+            ),
+            &Rgba::red(),
+        );
+
+        // rotating pixel
+        self.canvas.draw_pixel(
+            &Point::new(97, 15).rotate(&Point::new(110, 15), self.frame as f32 / 10.0),
+            &Rgba::yellow(),
+        );
+
+        // cyan polygon
+        self.canvas.draw_polygon_fill(&self.polygon, &Rgba::cyan());
 
         self.canvas.display();
 

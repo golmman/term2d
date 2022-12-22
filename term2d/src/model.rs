@@ -6,6 +6,7 @@ pub mod event;
 pub mod image;
 pub mod key;
 pub mod point;
+pub mod polygon;
 pub mod rect;
 pub mod rgba;
 pub mod video;

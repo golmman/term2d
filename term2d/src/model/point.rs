@@ -1,5 +1,7 @@
 use std::ops::Add;
+use std::ops::AddAssign;
 use std::ops::Sub;
+use std::ops::SubAssign;
 
 #[derive(Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
 pub struct Point {
@@ -20,7 +22,7 @@ impl Point {
         self.y
     }
 
-    pub fn is_bounded(&self, size: &Self) -> bool {
+    pub const fn is_contained(&self, size: &Self) -> bool {
         if self.x < 0 || self.y < 0 {
             return false;
         }
@@ -32,40 +34,51 @@ impl Point {
         true
     }
 
-    pub fn half(&self) -> Self {
+    pub const fn half(&self) -> Self {
         Self::new(self.x / 2, self.y / 2)
     }
 
-    pub fn left(&self) -> Self {
+    pub const fn left(&self) -> Self {
         Self::new(self.x - 1, self.y)
     }
 
-    pub fn right(&self) -> Self {
+    pub const fn right(&self) -> Self {
         Self::new(self.x + 1, self.y)
     }
 
-    pub fn up(&self) -> Self {
+    pub const fn up(&self) -> Self {
         Self::new(self.x, self.y - 1)
     }
 
-    pub fn up_left(&self) -> Self {
+    pub const fn up_left(&self) -> Self {
         Self::new(self.x - 1, self.y - 1)
     }
 
-    pub fn up_right(&self) -> Self {
+    pub const fn up_right(&self) -> Self {
         Self::new(self.x + 1, self.y - 1)
     }
 
-    pub fn down(&self) -> Self {
+    pub const fn down(&self) -> Self {
         Self::new(self.x, self.y + 1)
     }
 
-    pub fn down_left(&self) -> Self {
+    pub const fn down_left(&self) -> Self {
         Self::new(self.x - 1, self.y + 1)
     }
 
-    pub fn down_right(&self) -> Self {
+    pub const fn down_right(&self) -> Self {
         Self::new(self.x + 1, self.y + 1)
+    }
+
+    pub fn rotate(&self, center: &Point, angle: f32) -> Self {
+        let x0 = center.x as f32;
+        let y0 = center.y as f32;
+        let x1 = self.x as f32;
+        let y1 = self.y as f32;
+        let rx = (x1 - x0) * angle.cos() - (y1 - y0) * angle.sin() + x0;
+        let ry = (x1 - x0) * angle.sin() + (y1 - y0) * angle.cos() + y0;
+
+        Point::new(rx as i32, ry as i32)
     }
 }
 
@@ -103,6 +116,20 @@ impl Add for &Point {
     }
 }
 
+impl AddAssign<Self> for Point {
+    fn add_assign(&mut self, rhs: Self) {
+        self.x += rhs.x;
+        self.y += rhs.y;
+    }
+}
+
+impl AddAssign<&Self> for Point {
+    fn add_assign(&mut self, rhs: &Self) {
+        self.x += rhs.x;
+        self.y += rhs.y;
+    }
+}
+
 impl Sub for Point {
     type Output = Point;
 
@@ -116,5 +143,19 @@ impl Sub for &Point {
 
     fn sub(self, rhs: Self) -> Self::Output {
         Self::Output::new(self.x - rhs.x, self.y - rhs.y)
+    }
+}
+
+impl SubAssign<Self> for Point {
+    fn sub_assign(&mut self, rhs: Self) {
+        self.x -= rhs.x;
+        self.y -= rhs.y;
+    }
+}
+
+impl SubAssign<&Self> for Point {
+    fn sub_assign(&mut self, rhs: &Self) {
+        self.x -= rhs.x;
+        self.y -= rhs.y;
     }
 }

@@ -1,3 +1,5 @@
+use std::ops::AddAssign;
+
 use super::point::Point;
 
 #[derive(Clone, Eq, Hash, Ord, PartialEq, PartialOrd)]
@@ -42,5 +44,17 @@ impl From<&Point> for Rect {
             pos: Point::new(0, 0),
             size: p.clone(),
         }
+    }
+}
+
+impl AddAssign<Point> for Rect {
+    fn add_assign(&mut self, rhs: Point) {
+        self.pos += rhs;
+    }
+}
+
+impl AddAssign<&Point> for Rect {
+    fn add_assign(&mut self, rhs: &Point) {
+        self.pos += rhs;
     }
 }

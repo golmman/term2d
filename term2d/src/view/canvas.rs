@@ -2,6 +2,7 @@ use crate::model::circle::Circle;
 use crate::model::color::Color;
 use crate::model::image::Image;
 use crate::model::point::Point;
+use crate::model::polygon::Polygon;
 use crate::model::rect::Rect;
 use crate::model::rgba::Rgba;
 use crate::model::video::Video;
@@ -20,6 +21,23 @@ pub trait Canvas: Sized {
     fn display(&mut self);
 
     fn draw_rect(&mut self, r: &Rect, c: &Rgba) {
+        let x0 = r.pos.x;
+        let x1 = x0 + r.size.width();
+        let y0 = r.pos.y;
+        let y1 = y0 + r.size.height();
+
+        for x in x0..x1 {
+            self.draw_pixel(&Point::new(x, y0), c);
+            self.draw_pixel(&Point::new(x, y1 - 1), c);
+        }
+
+        for y in y0..y1 {
+            self.draw_pixel(&Point::new(x0, y), c);
+            self.draw_pixel(&Point::new(x1 - 1, y), c);
+        }
+    }
+
+    fn draw_rect_fill(&mut self, r: &Rect, c: &Rgba) {
         let x0 = r.pos.x;
         let x1 = x0 + r.size.width();
         let y0 = r.pos.y;
@@ -103,6 +121,23 @@ pub trait Canvas: Sized {
 
                 if distance < radius * radius {
                     self.draw_pixel(&Point::new(x, y), rgba);
+                }
+            }
+        }
+    }
+
+    fn draw_polygon_fill(&mut self, polygon: &Polygon, rgba: &Rgba) {
+        let boundary = polygon.boundary();
+        let min_x = boundary.pos.x;
+        let max_x = min_x + boundary.size.width();
+        let min_y = boundary.pos.y;
+        let max_y = min_y + boundary.size.height();
+
+        for x in min_x..=max_x {
+            for y in min_y..=max_y {
+                let p = &Point::new(x, y);
+                if polygon.is_inside(p) {
+                    self.draw_pixel(p, rgba);
                 }
             }
         }
