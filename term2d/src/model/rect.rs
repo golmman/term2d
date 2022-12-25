@@ -1,3 +1,4 @@
+use std::ops::Add;
 use std::ops::AddAssign;
 
 use super::point::Point;
@@ -56,5 +57,27 @@ impl AddAssign<Point> for Rect {
 impl AddAssign<&Point> for Rect {
     fn add_assign(&mut self, rhs: &Point) {
         self.pos += rhs;
+    }
+}
+
+impl Add<&Point> for &Rect {
+    type Output = Rect;
+
+    fn add(self, rhs: &Point) -> Self::Output {
+        Self::Output {
+            pos: &self.pos + rhs,
+            size: self.size.clone(),
+        }
+    }
+}
+
+impl Add<Point> for Rect {
+    type Output = Rect;
+
+    fn add(self, rhs: Point) -> Self::Output {
+        Self::Output {
+            pos: self.pos + rhs,
+            size: self.size.clone(),
+        }
     }
 }

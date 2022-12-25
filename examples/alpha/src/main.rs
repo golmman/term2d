@@ -23,9 +23,11 @@ struct AlphaController {
 
 impl AlphaController {
     fn new() -> Self {
+        let mut polygon = Polygon::new_star();
+        polygon += &Point::new(120, 15);
         Self {
             frame: 0,
-            polygon: Polygon::new_star(),
+            polygon,
             canvas: HalfblockCanvas::new(),
         }
     }
@@ -127,8 +129,11 @@ impl Controller<HalfblockCanvas> for AlphaController {
             &Rgba::yellow(),
         );
 
-        // cyan polygon
-        self.canvas.draw_polygon_fill(&self.polygon, &Rgba::cyan());
+        // rotation cyan star
+        self.canvas.draw_polygon(
+            &self.polygon.rotate(self.frame as f32 / -11.0),
+            &Rgba::cyan(),
+        );
 
         self.canvas.display();
 

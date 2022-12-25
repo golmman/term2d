@@ -126,6 +126,14 @@ pub trait Canvas: Sized {
         }
     }
 
+    fn draw_polygon(&mut self, polygon: &Polygon, rgba: &Rgba) {
+        let vertices = polygon.vertices();
+        for i in 0..vertices.len() - 1 {
+            self.draw_line(&vertices[i], &vertices[i + 1], rgba);
+        }
+        self.draw_line(&vertices[vertices.len() - 1], &vertices[0], rgba);
+    }
+
     fn draw_polygon_fill(&mut self, polygon: &Polygon, rgba: &Rgba) {
         let boundary = polygon.boundary();
         let min_x = boundary.pos.x;
