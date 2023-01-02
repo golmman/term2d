@@ -8,7 +8,7 @@ keywords = ["terminal", "2d", "graphics", "color"]
 license = "MIT"
 name = "term2d"
 repository = "https://github.com/golmman/term2d"
-version = "0.6.0"
+version = "0.6.1"
 
 [dependencies]
 signal-hook = "0.3.13"
