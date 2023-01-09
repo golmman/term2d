@@ -15,22 +15,17 @@ pub struct HalfblockCanvas {
 
 impl HalfblockCanvas {
     pub fn new() -> Self {
-        Self { screen: None, size: Point::new(0, 0) }
-    }
-}
-
-impl From<RawTerminalScreen> for HalfblockCanvas {
-    fn from(screen: RawTerminalScreen) -> Self {
-        let size = screen.size.clone();
         Self {
-            screen: Some(screen),
-            size,
+            screen: None,
+            size: Point::new(0, 0),
         }
     }
 }
 
 impl Canvas for HalfblockCanvas {
     fn init(&mut self, screen: RawTerminalScreen) {
+        let screen_size = screen.get_size();
+        self.size = Point::new(screen_size.width(), 2 * screen_size.height());
         self.screen = Some(screen);
     }
 
@@ -40,7 +35,7 @@ impl Canvas for HalfblockCanvas {
 
     fn resize(&mut self) -> &Point {
         let screen_size = self.screen.as_mut().unwrap().resize();
-        self.size = Point::new(screen_size.width(), screen_size.height() * 2);
+        self.size = Point::new(screen_size.width(), 2 * screen_size.height());
         &self.size
     }
 
@@ -50,11 +45,10 @@ impl Canvas for HalfblockCanvas {
 
     fn draw_pixel(&mut self, p: &Point, rgb: &Rgba) {
         let screen = self.screen.as_mut().unwrap();
-        let screen_size = Point::new(screen.size.width(), 2 * screen.size.height());
         let x = p.x;
         let y = p.y / 2;
 
-        if !Rect::from(&screen_size).contains(p) {
+        if !Rect::from(&self.size).contains(p) {
             return;
         }
 

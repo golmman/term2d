@@ -37,8 +37,7 @@ pub struct RawTerminalScreen {
     drop_strings: Vec<String>,
     main_display: RawTerminal<Stdout>,
     pixel_buffer: Vec<Pixel>,
-
-    pub size: Point,
+    size: Point,
 }
 
 pub trait Screen {
@@ -49,11 +48,11 @@ pub trait Screen {
     fn resize(&mut self) -> &Point;
     fn clear(&mut self);
 
-    fn draw_pixel(&mut self, p: &Point, rgb: &Rgba) {
+    fn draw_pixel(&mut self, p: &Point, rgba: &Rgba) {
         let index = (self.get_size().width() * p.y + p.x) as usize;
 
         let old_rgba = &self.get_pixel(index).color.bg;
-        let new_rgba = rgb.blend(old_rgba);
+        let new_rgba = rgba.blend(old_rgba);
 
         let new_color = Color {
             fg: Rgba::black(),
@@ -203,13 +202,75 @@ impl RawTerminalScreen {
 mod test {
     use super::*;
 
+    struct TestScreen {
+        main_display: Vec<u8>,
+        pixel_buffer: Vec<Pixel>,
+        size: Point,
+    }
+
+    impl TestScreen {
+        fn new() -> Self {
+            Self {
+                main_display: Vec::new(),
+                pixel_buffer: vec![Pixel::default(); 81],
+                size: Point::new(9, 9),
+            }
+        }
+    }
+
+    impl Screen for TestScreen {
+        fn get_pixel(&self, index: usize) -> &Pixel {
+            &self.pixel_buffer[index]
+        }
+
+        fn set_pixel(&mut self, index: usize, pixel: &Pixel) {
+            self.pixel_buffer[index] = pixel.clone();
+        }
+
+        fn flush_pixels(&mut self, raw_pixels: &[u8]) {
+            self.main_display.write_all(raw_pixels).unwrap();
+            self.main_display.flush().unwrap();
+        }
+
+        fn get_size(&self) -> &Point {
+            &self.size
+        }
+
+        fn resize(&mut self) -> &Point {
+            let (cols, rows) = termion::terminal_size().unwrap();
+            self.size = Point::new(cols as i32, rows as i32);
+            &self.size
+        }
+
+        fn clear(&mut self) {
+            let buffer_size = (self.size.width() * self.size.height()) as usize;
+            self.pixel_buffer = vec![Pixel::default(); buffer_size];
+        }
+    }
+
     #[test]
-    fn xxxxx() {
-        let mut buffer = vec![2 as u8; 1000];
+    fn display() {
+        let mut screen = TestScreen::new();
+        screen.draw_pixel(&Point::new(3, 3), &Rgba::green());
+        screen.draw_pixel(&Point::new(4, 3), &Rgba::green());
+        screen.display();
 
-        println!("{}", buffer.len());
-        println!("{}", "hello world".replace("l", "100"));
+        let chars: Vec<char> = screen
+            .main_display
+            .iter()
+            .map(|b| char::from_u32(*b as u32).unwrap())
+            .collect();
 
-        let screen = Screen::from(buffer);
+        for i in 0..chars.len() {
+            if chars[i] == '\u{1b}' {
+                if chars[i + 3] == ';' && chars[i + 4] == '1' && chars[i + 5] == 'H' {
+                    println!("|||");
+                }
+                print!("x");
+            } else {
+                print!("{}", chars[i]);
+            }
+        }
+        println!("|||");
     }
 }

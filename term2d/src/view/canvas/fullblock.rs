@@ -20,18 +20,9 @@ impl FullblockCanvas {
     }
 }
 
-impl From<RawTerminalScreen> for FullblockCanvas {
-    fn from(screen: RawTerminalScreen) -> Self {
-        let size = screen.size.clone();
-        Self {
-            screen: Some(screen),
-            size,
-        }
-    }
-}
-
 impl Canvas for FullblockCanvas {
     fn init(&mut self, screen: RawTerminalScreen) {
+        self.size = screen.get_size().clone();
         self.screen = Some(screen);
     }
 
@@ -51,7 +42,7 @@ impl Canvas for FullblockCanvas {
     fn draw_pixel(&mut self, p: &Point, rgb: &Rgba) {
         let screen = self.screen.as_mut().unwrap();
 
-        if !Rect::from(&screen.size).contains(p) {
+        if !Rect::from(&self.size).contains(p) {
             return;
         }
 
