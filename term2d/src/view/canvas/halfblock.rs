@@ -2,14 +2,14 @@ use crate::model::color::Color;
 use crate::model::point::Point;
 use crate::model::rect::Rect;
 use crate::model::rgba::Rgba;
-use crate::view::screen::DefaultScreen;
-
+use crate::view::screen::{DefaultScreen, RawTerminalScreen};
+use crate::view::screen::Screen2;
 use super::Canvas;
 
 const HALF_BLOCK: char = '▀';
 
 pub struct HalfblockCanvas {
-    screen: Option<DefaultScreen>,
+    screen: Option<RawTerminalScreen>,
 }
 
 impl HalfblockCanvas {
@@ -18,8 +18,8 @@ impl HalfblockCanvas {
     }
 }
 
-impl From<DefaultScreen> for HalfblockCanvas {
-    fn from(screen: DefaultScreen) -> Self {
+impl From<RawTerminalScreen> for HalfblockCanvas {
+    fn from(screen: RawTerminalScreen) -> Self {
         Self {
             screen: Some(screen),
         }
@@ -27,7 +27,7 @@ impl From<DefaultScreen> for HalfblockCanvas {
 }
 
 impl Canvas for HalfblockCanvas {
-    fn init(&mut self, screen: DefaultScreen) {
+    fn init(&mut self, screen: RawTerminalScreen) {
         self.screen = Some(screen);
     }
 

@@ -2,12 +2,12 @@ use crate::model::color::Color;
 use crate::model::point::Point;
 use crate::model::rect::Rect;
 use crate::model::rgba::Rgba;
-use crate::view::screen::DefaultScreen;
-
+use crate::view::screen::{DefaultScreen, RawTerminalScreen};
+use crate::view::screen::Screen2;
 use super::Canvas;
 
 pub struct FullblockCanvas {
-    screen: Option<DefaultScreen>,
+    screen: Option<RawTerminalScreen>,
 }
 
 impl FullblockCanvas {
@@ -16,8 +16,8 @@ impl FullblockCanvas {
     }
 }
 
-impl From<DefaultScreen> for FullblockCanvas {
-    fn from(screen: DefaultScreen) -> Self {
+impl From<RawTerminalScreen> for FullblockCanvas {
+    fn from(screen: RawTerminalScreen) -> Self {
         Self {
             screen: Some(screen),
         }
@@ -25,12 +25,12 @@ impl From<DefaultScreen> for FullblockCanvas {
 }
 
 impl Canvas for FullblockCanvas {
-    fn init(&mut self, screen: DefaultScreen) {
+    fn init(&mut self, screen: RawTerminalScreen) {
         self.screen = Some(screen);
     }
 
     fn resize(&mut self) -> Point {
-        self.screen.as_mut().unwrap().resize()
+        self.screen.as_mut().unwrap().resize().clone()
     }
 
     fn clear(&mut self) {

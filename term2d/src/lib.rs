@@ -11,6 +11,8 @@ use model::event::Event;
 use termion::input::TermRead;
 use view::canvas::Canvas;
 use view::screen::DefaultScreen;
+use view::screen::RawTerminalScreen;
+use crate::view::screen::Screen2;
 
 pub mod controller;
 pub mod model;
@@ -21,7 +23,7 @@ pub fn run<T: Canvas, C: Controller<T>>(controller: C) {
 }
 
 pub fn run_with_config<T: Canvas, C: Controller<T>>(mut controller: C, config: Config) {
-    let screen = DefaultScreen::new(config.screen_drop_strings);
+    let screen = RawTerminalScreen::new(config.screen_drop_strings);
     controller.get_canvas().init(screen);
 
     let (sender, receiver) = sync_channel::<Event>(1024);
