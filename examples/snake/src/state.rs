@@ -28,8 +28,8 @@ impl State {
         }
     }
 
-    pub fn resize(&mut self, screen_size: Point) {
-        self.screen_size = screen_size;
+    pub fn resize(&mut self, screen_size: &Point) {
+        self.screen_size = screen_size.clone();
 
         self.boundary = (
             Point::new(1, 6),

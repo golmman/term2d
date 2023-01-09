@@ -17,7 +17,7 @@ impl SnakeRenderer {
         }
     }
 
-    pub fn resize(&mut self) -> Point {
+    pub fn resize(&mut self) -> &Point {
         self.canvas.resize()
     }
 

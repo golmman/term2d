@@ -6,18 +6,16 @@ use crate::model::polygon::Polygon;
 use crate::model::rect::Rect;
 use crate::model::rgba::Rgba;
 use crate::model::video::Video;
-use crate::view::screen::DefaultScreen;
 
 use super::screen::RawTerminalScreen;
-use crate::view::screen::Screen2;
 
 pub mod fullblock;
 pub mod halfblock;
 
 pub trait Canvas: Sized {
     fn init(&mut self, screen: RawTerminalScreen);
-    // TODO: return &Point
-    fn resize(&mut self) -> Point;
+    fn get_size(&self) -> &Point;
+    fn resize(&mut self) -> &Point;
     fn clear(&mut self);
     fn draw_pixel(&mut self, p: &Point, rgb: &Rgba);
     fn draw_char(&mut self, p: &Point, color: &Color, ch: char);

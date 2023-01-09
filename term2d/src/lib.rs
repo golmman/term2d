@@ -10,9 +10,7 @@ use model::config::Config;
 use model::event::Event;
 use termion::input::TermRead;
 use view::canvas::Canvas;
-use view::screen::DefaultScreen;
 use view::screen::RawTerminalScreen;
-use crate::view::screen::Screen2;
 
 pub mod controller;
 pub mod model;
