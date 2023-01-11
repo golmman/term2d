@@ -5,6 +5,7 @@ use std::io::Write;
 use termion::raw::IntoRawMode;
 use termion::raw::RawTerminal;
 
+use crate::model::ansiesc::cursor_goto;
 use crate::model::color::Color;
 use crate::model::point::Point;
 use crate::model::rgba::Rgba;
@@ -111,20 +112,27 @@ pub trait Screen {
 
         for y in 0..height {
             let row = y + 1;
-            s.push_str(&format!("\x1b[{row};1H")); // goto (row, 1)
+            s.push_str(&cursor_goto(1, row));
 
             let mut i = (width * y) as usize;
             let i_max = (width * (y + 1)) as usize;
+            let mut last_color = &self.get_pixel(i).color;
+            s.push_str(&format!("{last_color}"));
 
             while i < i_max {
-                let mut last_color = &self.get_pixel(i).color;
-                s.push_str(&format!("{last_color}"));
+                let Pixel { color, ch } = &self.get_pixel(i);
 
-                while i < i_max && *last_color == self.get_pixel(i).color {
-                    last_color = &self.get_pixel(i).color;
-                    s.push(self.get_pixel(i).ch);
-                    i += 1;
+                if color.bg != last_color.bg && color.fg != last_color.fg {
+                    s.push_str(&format!("{color}"));
+                } else if color.bg != last_color.bg && color.fg == last_color.fg {
+                    s.push_str(&color.bg.bg_ansi());
+                } else if color.bg == last_color.bg && color.fg != last_color.fg {
+                    s.push_str(&color.fg.fg_ansi());
                 }
+
+                last_color = color;
+                s.push(*ch);
+                i += 1;
             }
         }
 
@@ -249,28 +257,186 @@ mod test {
     }
 
     #[test]
-    fn display() {
+    fn it_displays_an_empty_screen() {
+        let black_black = format!(
+            "{}",
+            Color {
+                bg: Rgba::black(),
+                fg: Rgba::black()
+            }
+        );
+        let mut screen = TestScreen::new();
+        screen.display();
+
+        let s = String::from_utf8(screen.main_display).unwrap();
+
+        let mut t = String::new();
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 1)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 2)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 3)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 4)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 5)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 6)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 7)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 8)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 9)));
+
+        assert_eq!(s, t);
+    }
+
+    #[test]
+    fn it_displays_a_screen_with_two_pixels_and_only_bg_color_changes() {
+        let black_black = format!(
+            "{}",
+            Color {
+                bg: Rgba::black(),
+                fg: Rgba::black()
+            }
+        );
+        let green_bg = Rgba::green().bg_ansi();
+        let black_bg = Rgba::black().bg_ansi();
+
         let mut screen = TestScreen::new();
         screen.draw_pixel(&Point::new(3, 3), &Rgba::green());
         screen.draw_pixel(&Point::new(4, 3), &Rgba::green());
         screen.display();
 
-        let chars: Vec<char> = screen
-            .main_display
-            .iter()
-            .map(|b| char::from_u32(*b as u32).unwrap())
-            .collect();
+        let s = String::from_utf8(screen.main_display).unwrap();
 
-        for i in 0..chars.len() {
-            if chars[i] == '\u{1b}' {
-                if chars[i + 3] == ';' && chars[i + 4] == '1' && chars[i + 5] == 'H' {
-                    println!("|||");
-                }
-                print!("x");
-            } else {
-                print!("{}", chars[i]);
+        let mut t = String::new();
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 1)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 2)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 3)));
+        t.push_str(&format!(
+            "{}{black_black}   {green_bg}  {black_bg}    ",
+            cursor_goto(1, 4)
+        ));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 5)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 6)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 7)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 8)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 9)));
+
+        assert_eq!(s, t);
+    }
+
+    #[test]
+    fn it_displays_a_screen_with_two_chars_and_fg_and_bg_color_changes() {
+        let black_black = format!(
+            "{}",
+            Color {
+                bg: Rgba::black(),
+                fg: Rgba::black()
             }
-        }
-        println!("|||");
+        );
+        let green_red = format!(
+            "{}",
+            Color {
+                bg: Rgba::green(),
+                fg: Rgba::red()
+            }
+        );
+
+        let mut screen = TestScreen::new();
+        screen.draw_char(
+            &Point::new(3, 3),
+            &Color {
+                bg: Rgba::green(),
+                fg: Rgba::red(),
+            },
+            '#',
+        );
+        screen.draw_char(
+            &Point::new(4, 3),
+            &Color {
+                bg: Rgba::green(),
+                fg: Rgba::red(),
+            },
+            '#',
+        );
+        screen.display();
+
+        let s = String::from_utf8(screen.main_display).unwrap();
+
+        let mut t = String::new();
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 1)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 2)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 3)));
+        t.push_str(&format!(
+            "{}{black_black}   {green_red}##{black_black}    ",
+            cursor_goto(1, 4)
+        ));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 5)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 6)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 7)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 8)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 9)));
+
+        assert_eq!(s, t);
+    }
+
+    #[test]
+    fn it_displays_a_screen_with_three_differently_colored_chars() {
+        let black_black = format!(
+            "{}",
+            Color {
+                bg: Rgba::black(),
+                fg: Rgba::black()
+            }
+        );
+        let green_red = format!(
+            "{}",
+            Color {
+                bg: Rgba::green(),
+                fg: Rgba::red()
+            }
+        );
+        let blue_fg = Rgba::blue().fg_ansi();
+        let yellow_bg = Rgba::yellow().bg_ansi();
+
+        let mut screen = TestScreen::new();
+        screen.draw_char(
+            &Point::new(3, 3),
+            &Color {
+                bg: Rgba::green(),
+                fg: Rgba::red(),
+            },
+            '#',
+        );
+        screen.draw_char(
+            &Point::new(4, 3),
+            &Color {
+                bg: Rgba::green(),
+                fg: Rgba::blue(),
+            },
+            '#',
+        );
+        screen.draw_char(
+            &Point::new(5, 3),
+            &Color {
+                bg: Rgba::yellow(),
+                fg: Rgba::blue(),
+            },
+            '#',
+        );
+        screen.display();
+
+        let s = String::from_utf8(screen.main_display).unwrap();
+
+        let mut t = String::new();
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 1)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 2)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 3)));
+        t.push_str(&format!(
+            "{}{black_black}   {green_red}#{blue_fg}#{yellow_bg}#{black_black}   ",
+            cursor_goto(1, 4)
+        ));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 5)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 6)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 7)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 8)));
+        t.push_str(&format!("{}{black_black}         ", cursor_goto(1, 9)));
+
+        assert_eq!(s, t);
     }
 }

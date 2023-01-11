@@ -102,6 +102,16 @@ impl Rgba {
         }
     }
 
+    pub fn bg_ansi(&self) -> String {
+        let Rgba { r, g, b, a: _ } = *self;
+        format!("\x1b[48;2;{r};{g};{b}m")
+    }
+
+    pub fn fg_ansi(&self) -> String {
+        let Rgba { r, g, b, a: _ } = *self;
+        format!("\x1b[38;2;{r};{g};{b}m")
+    }
+
     pub fn blend(&self, other: &Rgba) -> Rgba {
         if self.a == 0 {
             return other.clone();
