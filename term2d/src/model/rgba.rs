@@ -21,7 +21,7 @@ impl Default for Rgba {
 }
 
 impl Rgba {
-    pub fn transparent() -> Self {
+    pub const fn transparent() -> Self {
         Self {
             r: 0,
             g: 0,
@@ -30,7 +30,7 @@ impl Rgba {
         }
     }
 
-    pub fn black() -> Self {
+    pub const fn black() -> Self {
         Self {
             r: 0,
             g: 0,
@@ -39,7 +39,7 @@ impl Rgba {
         }
     }
 
-    pub fn white() -> Self {
+    pub const fn white() -> Self {
         Self {
             r: 255,
             g: 255,
@@ -48,7 +48,7 @@ impl Rgba {
         }
     }
 
-    pub fn red() -> Self {
+    pub const fn red() -> Self {
         Self {
             r: 255,
             g: 0,
@@ -57,7 +57,7 @@ impl Rgba {
         }
     }
 
-    pub fn green() -> Self {
+    pub const fn green() -> Self {
         Self {
             r: 0,
             g: 255,
@@ -66,7 +66,7 @@ impl Rgba {
         }
     }
 
-    pub fn blue() -> Self {
+    pub const fn blue() -> Self {
         Self {
             r: 0,
             g: 0,
@@ -75,7 +75,7 @@ impl Rgba {
         }
     }
 
-    pub fn yellow() -> Self {
+    pub const fn yellow() -> Self {
         Self {
             r: 255,
             g: 255,
@@ -84,7 +84,7 @@ impl Rgba {
         }
     }
 
-    pub fn cyan() -> Self {
+    pub const fn cyan() -> Self {
         Self {
             r: 0,
             g: 255,
@@ -93,11 +93,20 @@ impl Rgba {
         }
     }
 
-    pub fn violet() -> Self {
+    pub const fn violet() -> Self {
         Self {
             r: 255,
             g: 0,
             b: 255,
+            a: 255,
+        }
+    }
+
+    pub const fn orange() -> Self {
+        Self {
+            r: 255,
+            g: 128,
+            b: 0,
             a: 255,
         }
     }
