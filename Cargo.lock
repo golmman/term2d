@@ -547,7 +547,7 @@ dependencies = [
 
 [[package]]
 name = "term2d"
-version = "0.7.2"
+version = "0.7.3"
 dependencies = [
  "signal-hook",
  "termion",
@@ -563,6 +563,13 @@ dependencies = [
  "numtoa",
  "redox_syscall",
  "redox_termios",
+]
+
+[[package]]
+name = "tetris"
+version = "0.1.0"
+dependencies = [
+ "term2d",
 ]
 
 [[package]]
