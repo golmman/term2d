@@ -43,7 +43,7 @@ pub fn run_with_config<T: Canvas, C: Controller<T>>(mut controller: C, config: C
     }
 }
 
-fn send_elapse_events(sender: SyncSender<Event>, fps: u16) {
+fn send_elapse_events(sender: SyncSender<Event>, fps: u32) {
     if fps <= 0 {
         return;
     }

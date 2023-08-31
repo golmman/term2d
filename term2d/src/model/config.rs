@@ -3,8 +3,9 @@ use super::ansiesc::COLOR_RESET;
 use super::ansiesc::CURSOR_GOTO_1_1;
 use super::ansiesc::CURSOR_SHOW;
 
+#[derive(Clone)]
 pub struct Config {
-    pub fps: u16,
+    pub fps: u32,
     pub screen_drop_strings: Vec<String>,
 }
 

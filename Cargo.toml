@@ -3,6 +3,7 @@ members = [
     "examples/alpha",
     "examples/animation",
     "examples/dot",
+    "examples/new",
     "examples/snake",
     "examples/water",
     "examples/tetris",
