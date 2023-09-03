@@ -10,35 +10,146 @@ use model::config::Config;
 use model::event::Event;
 use termion::input::TermRead;
 use view::canvas::Canvas;
+use view::canvas::halfblock::HalfblockCanvas;
 use view::screen::RawTerminalScreen;
 
 pub mod controller;
 pub mod model;
 pub mod view;
 
-pub fn run<T: Canvas, C: Controller<T>>(controller: C) {
-    run_with_config(controller, Config::default());
+pub type DefaultCanvas = HalfblockCanvas;
+
+pub type ModelFn<Model> = fn(&App) -> Model;
+pub type ViewFn<Model, Canvas = DefaultCanvas> = fn(&App, &Model, &mut Canvas);
+pub type EventFn<Model> = fn(&App, &mut Model, Event) -> bool;
+
+pub struct App {
+    pub config: Config,
+    pub frame_count: u64,
+
+    // make sure App is never constructed, AppBuilder has to be used
+    _private_constructor: i32,
 }
 
-pub fn run_with_config<T: Canvas, C: Controller<T>>(mut controller: C, config: Config) {
-    let screen = RawTerminalScreen::new(config.screen_drop_strings);
-    controller.get_canvas().init(screen);
+impl App {
+    fn new(config: Config) -> Self {
+        Self {
+            config,
+            frame_count: 0,
 
-    let (sender, receiver) = sync_channel::<Event>(1024);
-    let elapse_sender = sender.clone();
-    let key_sender = sender.clone();
-    let resize_sender = sender.clone();
+            _private_constructor: 0,
+        }
+    }
+}
 
-    thread::spawn(move || send_elapse_events(elapse_sender, config.fps));
-    thread::spawn(move || send_key_events(key_sender));
-    thread::spawn(move || send_resize_events(resize_sender));
+pub struct AppBuilder<M, C = DefaultCanvas>
+where
+    C: Canvas,
+{
+    pub canvas: C,
+    pub config: Config,
+    pub model_fn: ModelFn<M>,
+    pub view_fn: ViewFn<M, C>,
+    pub event_fn: EventFn<M>,
+}
 
-    controller.update(Event::Resize);
+impl<M> AppBuilder<M> {
+    pub fn new(model_fn: ModelFn<M>) -> Self {
+        Self {
+            canvas: HalfblockCanvas::new(),
+            config: Config::default(),
+            model_fn,
+            view_fn: |a, m, c| {},
+            event_fn: |a, m, e| true,
+        }
+    }
 
-    loop {
-        let event = receiver.recv().unwrap();
-        if !controller.update(event) {
-            break;
+    pub fn run(mut self) {
+        let mut app = App::new(self.config.clone());
+        let screen = RawTerminalScreen::new(self.config.screen_drop_strings);
+        self.canvas.init(screen);
+
+        let (sender, receiver) = sync_channel::<Event>(1024);
+        let elapse_sender = sender.clone();
+        let key_sender = sender.clone();
+        let resize_sender = sender.clone();
+
+        thread::spawn(move || send_elapse_events(elapse_sender, self.config.fps));
+        thread::spawn(move || send_key_events(key_sender));
+        thread::spawn(move || send_resize_events(resize_sender));
+
+        let mut model = (self.model_fn)(&app);
+
+        (self.event_fn)(&app, &mut model, Event::Resize);
+
+        loop {
+            let event = receiver.recv().unwrap();
+            if !(self.event_fn)(&app, &mut model, event) {
+                return;
+            };
+            (self.view_fn)(&app, &model, &mut self.canvas);
+            app.frame_count += 1;
+        }
+    }
+
+    pub fn fps(self, fps: u32) -> Self {
+        let AppBuilder {
+            canvas,
+            config: Config {
+                screen_drop_strings,
+                ..
+            },
+            model_fn,
+            view_fn,
+            event_fn,
+            ..
+        } = self;
+
+        AppBuilder {
+            canvas,
+            config: Config {
+                fps,
+                screen_drop_strings,
+            },
+            model_fn,
+            view_fn,
+            event_fn,
+        }
+    }
+
+    pub fn event(self, event_fn: EventFn<M>) -> Self {
+        let AppBuilder {
+            canvas,
+            config,
+            model_fn,
+            view_fn,
+            ..
+        } = self;
+
+        AppBuilder {
+            canvas,
+            config,
+            model_fn,
+            view_fn,
+            event_fn,
+        }
+    }
+
+    pub fn view(self, view_fn: ViewFn<M>) -> Self {
+        let AppBuilder {
+            canvas,
+            config,
+            model_fn,
+            event_fn,
+            ..
+        } = self;
+
+        AppBuilder {
+            canvas,
+            config,
+            model_fn,
+            view_fn,
+            event_fn,
         }
     }
 }
