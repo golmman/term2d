@@ -5,4 +5,4 @@ edition = "2021"
 publish = false
 
 [dependencies]
-term2d = { path = "../../term2d/" }
+term2d = "0.7.3"
