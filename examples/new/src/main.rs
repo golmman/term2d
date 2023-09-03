@@ -20,16 +20,15 @@ use term2d::view::canvas::halfblock::HalfblockCanvas;
 use term2d::view::canvas::Canvas;
 use term2d::view::screen::RawTerminalScreen;
 
-pub type ModelFn<M> = fn(&App) -> M;
-pub type ViewFn<M> = fn(&App, &M, &mut HalfblockCanvas);
-pub type EventFn<M> = fn(&App, &mut M, Event) -> bool;
-pub type ExitFn<M> = fn(&App, M);
+pub type DefaultCanvas = HalfblockCanvas;
 
-pub type DefaultView = HalfblockCanvas;
+pub type ModelFn<M> = fn(&App) -> M;
+pub type ViewFn<M, C = DefaultCanvas> = fn(&App, &M, &mut C);
+pub type EventFn<M> = fn(&App, &mut M, Event) -> bool;
 
 struct App {
-    config: Config,
-    frame_count: u64,
+    pub config: Config,
+    pub frame_count: u64,
 }
 
 impl App {
@@ -41,12 +40,15 @@ impl App {
     }
 }
 
-struct AppBuilder<M = ()> {
-    canvas: HalfblockCanvas,
-    config: Config,
-    model_fn: ModelFn<M>,
-    view_fn: ViewFn<M>,
-    event_fn: EventFn<M>,
+struct AppBuilder<M, C = DefaultCanvas>
+where
+    C: Canvas,
+{
+    pub canvas: C,
+    pub config: Config,
+    pub model_fn: ModelFn<M>,
+    pub view_fn: ViewFn<M, C>,
+    pub event_fn: EventFn<M>,
 }
 
 impl<M> AppBuilder<M> {
