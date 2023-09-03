@@ -1,32 +1,32 @@
-use std::io::stdin;
-use std::process::exit;
-use std::sync::mpsc::sync_channel;
-use std::sync::mpsc::SyncSender;
-use std::thread;
-use std::thread::sleep;
-use std::time::Duration;
+
+
+
+
+
+
+
 
 use term2d::App;
 use term2d::AppBuilder;
-use termion::input::TermRead;
 
-use term2d::controller::Controller;
+
+
 use term2d::model::color::Color;
-use term2d::model::config::Config;
+
 use term2d::model::event::Event;
 use term2d::model::key::Key;
 use term2d::model::point::Point;
 use term2d::model::rgba::Rgba;
-use term2d::view::canvas::fullblock::FullblockCanvas;
+
 use term2d::view::canvas::halfblock::HalfblockCanvas;
 use term2d::view::canvas::Canvas;
-use term2d::view::screen::RawTerminalScreen;
+
 
 struct MyModel {
     pub pixel_point: Point,
 }
 
-fn init_model(app: &App) -> MyModel {
+fn init_model(_app: &App) -> MyModel {
     MyModel {
         pixel_point: Point::new(0, 0),
     }
