@@ -1,15 +1,5 @@
-
-
-
-
-
-
-
-
 use term2d::App;
 use term2d::AppBuilder;
-
-
 
 use term2d::model::color::Color;
 
@@ -20,7 +10,6 @@ use term2d::model::rgba::Rgba;
 
 use term2d::view::canvas::halfblock::HalfblockCanvas;
 use term2d::view::canvas::Canvas;
-
 
 struct MyModel {
     pub pixel_point: Point,
