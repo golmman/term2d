@@ -5,12 +5,11 @@ use std::thread;
 use std::thread::sleep;
 use std::time::Duration;
 
-use controller::Controller;
 use model::config::Config;
 use model::event::Event;
 use termion::input::TermRead;
-use view::canvas::Canvas;
 use view::canvas::halfblock::HalfblockCanvas;
+use view::canvas::Canvas;
 use view::screen::RawTerminalScreen;
 
 pub mod controller;
@@ -59,8 +58,8 @@ impl<M> AppBuilder<M> {
             canvas: HalfblockCanvas::new(),
             config: Config::default(),
             model_fn,
-            view_fn: |a, m, c| {},
-            event_fn: |a, m, e| true,
+            view_fn: |_a, _m, _c| {},
+            event_fn: |_a, _m, _e| true,
         }
     }
 
