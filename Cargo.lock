@@ -133,7 +133,7 @@ checksum = "7a81dae078cea95a014a339291cec439d2f232ebe854a9d672b796c6afafa9b7"
 name = "dot"
 version = "0.1.0"
 dependencies = [
- "term2d 0.7.3",
+ "term2d 0.8.0",
 ]
 
 [[package]]
@@ -311,6 +311,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "minimal"
+version = "0.1.0"
+dependencies = [
+ "term2d 0.8.0",
+]
+
+[[package]]
 name = "miniz_oxide"
 version = "0.5.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -335,15 +342,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6a51313c5820b0b02bd422f4b44776fbf47961755c74ce64afc73bfad10226c3"
 dependencies = [
  "getrandom",
-]
-
-[[package]]
-name = "new"
-version = "0.1.0"
-dependencies = [
- "signal-hook",
- "term2d 0.8.0",
- "termion",
 ]
 
 [[package]]

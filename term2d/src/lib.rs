@@ -12,7 +12,6 @@ use view::canvas::halfblock::HalfblockCanvas;
 use view::canvas::Canvas;
 use view::screen::RawTerminalScreen;
 
-pub mod controller;
 pub mod model;
 pub mod view;
 
