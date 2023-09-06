@@ -35,4 +35,8 @@ impl Video {
 
         mirrored_video
     }
+
+    pub fn next_frame(&mut self) {
+        self.frame = (self.frame + 1) % self.images.len();
+    }
 }

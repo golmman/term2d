@@ -20,7 +20,7 @@ name = "animation"
 version = "0.1.0"
 dependencies = [
  "image",
- "term2d 0.7.3",
+ "term2d 0.8.0",
 ]
 
 [[package]]
