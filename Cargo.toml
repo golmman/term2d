@@ -6,6 +6,5 @@ members = [
     "examples/minimal",
     "examples/snake",
     "examples/water",
-    "examples/tetris",
     "term2d",
 ]

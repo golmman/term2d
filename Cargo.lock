@@ -12,7 +12,7 @@ checksum = "f26201604c87b1e01bd3d98f8d5d9a8fcbb815e8cedb41ffccbeb4bf593a35fe"
 name = "alpha"
 version = "0.1.0"
 dependencies = [
- "term2d 0.8.0",
+ "term2d",
 ]
 
 [[package]]
@@ -20,7 +20,7 @@ name = "animation"
 version = "0.1.0"
 dependencies = [
  "image",
- "term2d 0.8.0",
+ "term2d",
 ]
 
 [[package]]
@@ -133,7 +133,7 @@ checksum = "7a81dae078cea95a014a339291cec439d2f232ebe854a9d672b796c6afafa9b7"
 name = "dot"
 version = "0.1.0"
 dependencies = [
- "term2d 0.8.0",
+ "term2d",
 ]
 
 [[package]]
@@ -314,7 +314,7 @@ dependencies = [
 name = "minimal"
 version = "0.1.0"
 dependencies = [
- "term2d 0.8.0",
+ "term2d",
 ]
 
 [[package]]
@@ -529,7 +529,7 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 name = "snake"
 version = "0.1.0"
 dependencies = [
- "term2d 0.8.0",
+ "term2d",
 ]
 
 [[package]]
@@ -554,16 +554,6 @@ dependencies = [
 
 [[package]]
 name = "term2d"
-version = "0.7.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "63282a8d1411327bee968deb368ca72792c464ef71231d5e1a020063759b590b"
-dependencies = [
- "signal-hook",
- "termion",
-]
-
-[[package]]
-name = "term2d"
 version = "0.8.0"
 dependencies = [
  "signal-hook",
@@ -580,13 +570,6 @@ dependencies = [
  "numtoa",
  "redox_syscall",
  "redox_termios",
-]
-
-[[package]]
-name = "tetris"
-version = "0.1.0"
-dependencies = [
- "term2d 0.7.3",
 ]
 
 [[package]]
@@ -679,7 +662,7 @@ checksum = "1c38c045535d93ec4f0b4defec448e4291638ee608530863b1e2ba115d4fff7f"
 name = "water"
 version = "0.1.0"
 dependencies = [
- "term2d 0.7.3",
+ "term2d",
 ]
 
 [[package]]
