@@ -7,6 +7,7 @@ use std::time::Duration;
 
 use model::config::Config;
 use model::event::Event;
+use model::point::Point;
 use termion::input::TermRead;
 use view::canvas::halfblock::HalfblockCanvas;
 use view::canvas::Canvas;
@@ -62,34 +63,6 @@ impl<M> AppBuilder<M> {
         }
     }
 
-    pub fn run(mut self) {
-        let mut app = App::new(self.config.clone());
-        let screen = RawTerminalScreen::new(self.config.screen_drop_strings);
-        self.canvas.init(screen);
-
-        let (sender, receiver) = sync_channel::<Event>(1024);
-        let elapse_sender = sender.clone();
-        let key_sender = sender.clone();
-        let resize_sender = sender.clone();
-
-        thread::spawn(move || send_elapse_events(elapse_sender, self.config.fps));
-        thread::spawn(move || send_key_events(key_sender));
-        thread::spawn(move || send_resize_events(resize_sender));
-
-        let mut model = (self.model_fn)(&app);
-
-        (self.event_fn)(&app, &mut model, Event::Resize);
-
-        loop {
-            let event = receiver.recv().unwrap();
-            if !(self.event_fn)(&app, &mut model, event) {
-                return;
-            };
-            (self.view_fn)(&app, &model, &mut self.canvas);
-            app.frame_count += 1;
-        }
-    }
-
     pub fn fps(self, fps: u32) -> Self {
         let AppBuilder {
             canvas,
@@ -97,6 +70,29 @@ impl<M> AppBuilder<M> {
                 screen_drop_strings,
                 ..
             },
+            model_fn,
+            view_fn,
+            event_fn,
+            ..
+        } = self;
+
+        AppBuilder {
+            canvas,
+            config: Config {
+                fps,
+                screen_drop_strings,
+            },
+            model_fn,
+            view_fn,
+            event_fn,
+        }
+    }
+
+    pub fn debug(self) -> Self {
+        let screen_drop_strings = Vec::new();
+        let AppBuilder {
+            canvas,
+            config: Config { fps, .. },
             model_fn,
             view_fn,
             event_fn,
@@ -150,6 +146,45 @@ impl<M> AppBuilder<M> {
             event_fn,
         }
     }
+
+    pub fn run(mut self) {
+        let mut app = App::new(self.config.clone());
+        let screen = RawTerminalScreen::new(self.config.screen_drop_strings);
+        self.canvas.init(screen);
+
+        let (sender, receiver) = sync_channel::<Event>(1024);
+        let elapse_sender = sender.clone();
+        let key_sender = sender.clone();
+        let resize_sender = sender.clone();
+
+        thread::spawn(move || send_elapse_events(elapse_sender, self.config.fps));
+        thread::spawn(move || send_key_events(key_sender));
+        thread::spawn(move || send_resize_events(resize_sender));
+
+        let mut model = (self.model_fn)(&app);
+
+        let canvas_size = self.canvas.resize().clone();
+        (self.event_fn)(&app, &mut model, Event::Resize(canvas_size));
+
+        loop {
+            let event = receiver.recv().unwrap();
+            let refined_event = match event {
+                Event::Resize(_) => {
+                    let canvas_size = self.canvas.resize().clone();
+                    Event::Resize(canvas_size)
+                }
+                _ => event,
+            };
+
+            if !(self.event_fn)(&app, &mut model, refined_event) {
+                return;
+            };
+
+            (self.view_fn)(&app, &model, &mut self.canvas);
+
+            app.frame_count += 1;
+        }
+    }
 }
 
 fn send_elapse_events(sender: SyncSender<Event>, fps: u32) {
@@ -174,7 +209,8 @@ fn send_key_events(sender: SyncSender<Event>) {
 fn send_resize_events(sync_sender: SyncSender<Event>) {
     let _ = unsafe {
         signal_hook::low_level::register(signal_hook::consts::SIGWINCH, move || {
-            sync_sender.send(Event::Resize).unwrap();
+            // TODO: add size
+            sync_sender.send(Event::Resize(Point::new(0, 0))).unwrap();
         })
     };
 }

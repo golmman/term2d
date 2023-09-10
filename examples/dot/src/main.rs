@@ -15,7 +15,7 @@ fn event_fn(_app: &App, _model: &mut (), event: Event) -> bool {
             Key::Ctrl('c') => return false,
             _ => {}
         },
-        Event::Resize => {}
+        Event::Resize(_) => {}
         Event::Elapse => {}
     }
 

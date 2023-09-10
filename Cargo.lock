@@ -529,7 +529,7 @@ checksum = "a507befe795404456341dfab10cef66ead4c041f62b8b11bbb92bffe5d0953e0"
 name = "snake"
 version = "0.1.0"
 dependencies = [
- "term2d 0.7.3",
+ "term2d 0.8.0",
 ]
 
 [[package]]

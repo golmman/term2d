@@ -28,7 +28,7 @@ fn event_fn(app: &App, model: &mut MyModel, event: Event) -> bool {
             Key::Ctrl('c') => return false,
             _ => {}
         },
-        Event::Resize => {}
+        Event::Resize(_) => {}
         Event::Elapse => {
             model.pixel_point.x = 12 + (10.0 * (app.frame_count as f32 / 10.0).cos()) as i32;
             model.pixel_point.y = 12 + (10.0 * (app.frame_count as f32 / 10.0).sin()) as i32;

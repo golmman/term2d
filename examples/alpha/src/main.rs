@@ -28,7 +28,7 @@ fn event_fn(app: &App, model: &mut AlphaModel, event: Event) -> bool {
             Key::Ctrl('c') => return false,
             _ => {}
         },
-        Event::Resize => {}
+        Event::Resize(_) => {}
         Event::Elapse => {
             model.polygon.rotate(app.frame_count as f32 / -11.0);
         }

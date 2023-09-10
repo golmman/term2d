@@ -74,7 +74,7 @@ fn event_fn(_app: &App, model: &mut AnimationModel, event: Event) -> bool {
             Key::Ctrl('c') => return false,
             _ => {}
         },
-        Event::Resize => {}
+        Event::Resize(_) => {}
         Event::Elapse => {
             model.cat_video.next_frame();
             model.cat_video2.next_frame();

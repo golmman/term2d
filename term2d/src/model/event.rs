@@ -1,8 +1,9 @@
 use super::key::Key;
+use super::point::Point;
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug, PartialEq)]
 pub enum Event {
     Key(Key),
-    Resize,
+    Resize(Point),
     Elapse,
 }
