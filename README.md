@@ -1,7 +1,7 @@
 # term2d
 
-A simple 2d engine for drawing things in your terminal used with a
-[nannou](https://github.com/nannou-org/nannou)-like mvc-architecture.
+A simple 2d engine for drawing things in your terminal by following a
+[nannou](https://github.com/nannou-org/nannou)-like mvc-pattern.
 
 The engine is located in `term2d/`.
 
