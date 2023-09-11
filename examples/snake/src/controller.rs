@@ -1,7 +1,7 @@
 use crate::state::SnakeModel;
-use term2d::App;
 use term2d::model::event::Event;
 use term2d::model::key::Key;
+use term2d::App;
 
 pub fn update_model(_app: &App, model: &mut SnakeModel, event: Event) -> bool {
     match event {
