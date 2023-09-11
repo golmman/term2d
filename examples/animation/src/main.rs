@@ -5,8 +5,9 @@ use std::fs::File;
 use std::path::Path;
 use term2d::model::image::Image;
 use term2d::model::video::Video;
+use term2d::App;
+use term2d::AppBuilder;
 
-use term2d::controller::Controller;
 use term2d::model::color::Color;
 use term2d::model::event::Event;
 use term2d::model::key::Key;
@@ -16,97 +17,11 @@ use term2d::model::rgba::Rgba;
 use term2d::view::canvas::halfblock::HalfblockCanvas;
 use term2d::view::canvas::Canvas;
 
-struct AnimationController {
+struct AnimationModel {
     cat_video: Video,
     cat_video2: Video,
     deer_image: Image,
     walk_video: Video,
-    canvas: HalfblockCanvas,
-}
-
-impl AnimationController {
-    fn new(cat_video: Video, deer_image: Image, walk_video: Video) -> Self {
-        let mut cat_video2 = cat_video.mirror_y();
-        cat_video2.frame = 3;
-
-        Self {
-            cat_video,
-            cat_video2,
-            deer_image,
-            walk_video,
-            canvas: HalfblockCanvas::new(),
-        }
-    }
-}
-
-impl Controller<HalfblockCanvas> for AnimationController {
-    fn update(&mut self, event: Event) -> bool {
-        match event {
-            Event::Key(key) => match key {
-                Key::Char('q') => return false,
-                Key::Ctrl('c') => return false,
-                _ => {}
-            },
-            Event::Resize => {}
-            Event::Elapse => {}
-        }
-
-        self.canvas.clear();
-
-        self.canvas.draw_text(
-            &Point::new(2, 0),
-            &Color {
-                fg: Rgba::white(),
-                bg: Rgba::transparent(),
-            },
-            &format!(
-                "press 'q' to quit, frame: {}, {:?}",
-                self.walk_video.frame,
-                self.walk_video.images.len()
-            ),
-        );
-
-        self.canvas.draw_rect_fill(
-            &Rect::new(2, 2, 20, 20),
-            &Rgba {
-                r: 96,
-                g: 96,
-                b: 96,
-                a: 255,
-            },
-        );
-
-        self.canvas
-            .draw_video(&Point::new(10, 6), &mut self.cat_video);
-        self.canvas
-            .draw_video(&Point::new(19, 6), &mut self.cat_video2);
-        self.canvas
-            .draw_video(&Point::new(2, 3), &mut self.walk_video);
-        self.canvas
-            .draw_image(&Point::new(30, 0), &mut self.deer_image);
-
-        self.canvas.display();
-
-        true
-    }
-
-    fn get_canvas(&mut self) -> &mut HalfblockCanvas {
-        &mut self.canvas
-    }
-}
-
-fn main() {
-    let cat_raw = load_gif_raw("examples/animation/data/cat.gif");
-    let walk_raw = load_gif_raw("examples/animation/data/walk.gif");
-    let deer_raw = load_image_raw("examples/animation/data/deer.png");
-
-    let cat_video = Video::from(cat_raw);
-    let walk_video = Video::from(walk_raw);
-    let deer_image = Image::from(deer_raw);
-
-    let controller = AnimationController::new(cat_video, deer_image, walk_video);
-
-    term2d::run(controller);
 }
 
 fn load_gif_raw<T: AsRef<Path>>(path: T) -> Vec<(u32, u32, Vec<u8>)> {
@@ -130,4 +45,83 @@ fn load_image_raw<T: AsRef<Path>>(path: T) -> (u32, u32, Vec<u8>) {
     let (width, height) = img.dimensions();
     let raw = img.into_bytes();
     (width, height, raw)
+}
+
+fn init_model(_app: &App) -> AnimationModel {
+    let cat_raw = load_gif_raw("examples/animation/data/cat.gif");
+    let walk_raw = load_gif_raw("examples/animation/data/walk.gif");
+    let deer_raw = load_image_raw("examples/animation/data/deer.png");
+
+    let cat_video = Video::from(cat_raw);
+    let walk_video = Video::from(walk_raw);
+    let deer_image = Image::from(deer_raw);
+
+    let mut cat_video2 = cat_video.mirror_y();
+    cat_video2.frame = 3;
+
+    AnimationModel {
+        cat_video,
+        cat_video2,
+        deer_image,
+        walk_video,
+    }
+}
+
+fn event_fn(_app: &App, model: &mut AnimationModel, event: Event) -> bool {
+    match event {
+        Event::Key(key) => match key {
+            Key::Char('q') => return false,
+            Key::Ctrl('c') => return false,
+            _ => {}
+        },
+        Event::Resize(_) => {}
+        Event::Elapse => {
+            model.cat_video.next_frame();
+            model.cat_video2.next_frame();
+            model.walk_video.next_frame();
+        }
+    }
+
+    true
+}
+
+fn view_fn(_app: &App, model: &AnimationModel, canvas: &mut HalfblockCanvas) {
+    canvas.clear();
+
+    canvas.draw_text(
+        &Point::new(2, 0),
+        &Color {
+            fg: Rgba::white(),
+            bg: Rgba::transparent(),
+        },
+        &format!(
+            "press 'q' to quit, frame: {}, {:?}",
+            model.walk_video.frame,
+            model.walk_video.images.len()
+        ),
+    );
+
+    canvas.draw_rect_fill(
+        &Rect::new(2, 2, 20, 20),
+        &Rgba {
+            r: 96,
+            g: 96,
+            b: 96,
+            a: 255,
+        },
+    );
+
+    canvas.draw_video(&Point::new(10, 6), &model.cat_video);
+    canvas.draw_video(&Point::new(19, 6), &model.cat_video2);
+    canvas.draw_video(&Point::new(2, 3), &model.walk_video);
+    canvas.draw_image(&Point::new(30, 0), &model.deer_image);
+
+    canvas.display();
+}
+
+fn main() {
+    AppBuilder::new(init_model)
+        .event(event_fn)
+        .view(view_fn)
+        .run();
 }

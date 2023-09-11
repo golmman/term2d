@@ -1,10 +1,11 @@
 [workspace]
+resolver = "2"
 members = [
     "examples/alpha",
     "examples/animation",
     "examples/dot",
+    "examples/minimal",
     "examples/snake",
     "examples/water",
-    "examples/tetris",
     "term2d",
 ]

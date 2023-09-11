@@ -163,9 +163,8 @@ pub trait Canvas: Sized {
         }
     }
 
-    fn draw_video(&mut self, p: &Point, video: &mut Video) {
+    fn draw_video(&mut self, p: &Point, video: &Video) {
         let image = &video.images[video.frame];
         self.draw_image(p, image);
-        video.frame = (video.frame + 1) % video.images.len();
     }
 }

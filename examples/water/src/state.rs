@@ -1,7 +1,16 @@
 use term2d::model::point::Point;
+use term2d::App;
 
 use crate::world::PixelType;
 use crate::world::World;
+
+pub fn init_model(_app: &App) -> State {
+    State {
+        cursor: Point::new(50, 2),
+        frame: 0,
+        world: World::new(&Point::new(40, 4), &Point::new(50, 25)),
+    }
+}
 
 pub struct State {
     pub cursor: Point,
@@ -10,14 +19,6 @@ pub struct State {
 }
 
 impl State {
-    pub fn new() -> Self {
-        Self {
-            cursor: Point::new(50, 2),
-            frame: 0,
-            world: World::new(&Point::new(40, 4), &Point::new(50, 25)),
-        }
-    }
-
     pub fn toggle_dirt(&mut self) {
         let p = Point::new(
             self.cursor.x - self.world.pos.x,

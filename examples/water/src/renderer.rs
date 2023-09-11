@@ -3,61 +3,50 @@ use term2d::model::point::Point;
 use term2d::model::rgba::Rgba;
 use term2d::view::canvas::halfblock::HalfblockCanvas;
 use term2d::view::canvas::Canvas;
+use term2d::App;
 
 use crate::state::State;
 
-pub struct Renderer {
-    pub canvas: HalfblockCanvas,
+pub fn draw_model(_app: &App, model: &State, canvas: &mut HalfblockCanvas) {
+    canvas.clear();
+
+    draw_world(model, canvas);
+    draw_water(model, canvas);
+    draw_debug(model, canvas);
+    draw_cursor(model, canvas);
+
+    canvas.display();
 }
 
-impl Renderer {
-    pub fn new() -> Self {
-        Self {
-            canvas: HalfblockCanvas::new(),
-        }
-    }
+fn draw_cursor(model: &State, canvas: &mut HalfblockCanvas) {
+    canvas.draw_pixel(&model.cursor, &Rgba::red());
+}
 
-    pub fn draw(&mut self, state: &State) {
-        self.canvas.clear();
+fn draw_debug(model: &State, canvas: &mut HalfblockCanvas) {
+    canvas.draw_text(
+        &Point::new(2, 0),
+        &Color {
+            fg: Rgba::white(),
+            bg: Rgba::transparent(),
+        },
+        &format!("press 'q' to quit, frame: {}", model.frame),
+    );
+    canvas.draw_pixel(&Point::new(10, 7), &Rgba::red());
+}
 
-        self.draw_world(state);
-        self.draw_water(state);
-        self.draw_debug(state);
-        self.draw_cursor(state);
+fn draw_world(model: &State, canvas: &mut HalfblockCanvas) {
+    canvas.draw_image(
+        &Point::new(model.world.pos.x, model.world.pos.y),
+        &model.world.image,
+    );
+}
 
-        self.canvas.display();
-    }
-
-    pub fn draw_cursor(&mut self, state: &State) {
-        self.canvas.draw_pixel(&state.cursor, &Rgba::red());
-    }
-
-    pub fn draw_debug(&mut self, state: &State) {
-        self.canvas.draw_text(
-            &Point::new(2, 0),
-            &Color {
-                fg: Rgba::white(),
-                bg: Rgba::transparent(),
-            },
-            &format!("press 'q' to quit, frame: {}", state.frame),
+fn draw_water(model: &State, canvas: &mut HalfblockCanvas) {
+    for droplet in &model.world.water {
+        let a = Point::new(
+            model.world.pos.x + droplet.pos.x,
+            model.world.pos.y + droplet.pos.y,
         );
-        self.canvas.draw_pixel(&Point::new(10, 7), &Rgba::red());
-    }
-
-    pub fn draw_world(&mut self, state: &State) {
-        self.canvas.draw_image(
-            &Point::new(state.world.pos.x, state.world.pos.y),
-            &state.world.image,
-        );
-    }
-
-    pub fn draw_water(&mut self, state: &State) {
-        for droplet in &state.world.water {
-            let a = Point::new(
-                state.world.pos.x + droplet.pos.x,
-                state.world.pos.y + droplet.pos.y,
-            );
-            self.canvas.draw_pixel(&a, &droplet.rgba);
-        }
+        canvas.draw_pixel(&a, &droplet.rgba);
     }
 }

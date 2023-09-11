@@ -1,8 +1,9 @@
 use term2d::model::point::Point;
+use term2d::App;
 
 use crate::random::Random;
 
-pub struct State {
+pub struct SnakeModel {
     pub food: Point,
     pub frame: u32,
     pub game_over: bool,
@@ -14,20 +15,20 @@ pub struct State {
     random: Random,
 }
 
-impl State {
-    pub fn new() -> Self {
-        Self {
-            boundary: (Point::new(0, 0), Point::new(0, 0)),
-            direction: Point::new(0, 0),
-            food: Point::new(0, 0),
-            frame: 0,
-            game_over: false,
-            random: Random::new(),
-            screen_size: Point::new(0, 0),
-            snake: Vec::new(),
-        }
+pub fn init_model(_app: &App) -> SnakeModel {
+    SnakeModel {
+        boundary: (Point::new(0, 0), Point::new(0, 0)),
+        direction: Point::new(0, 0),
+        food: Point::new(0, 0),
+        frame: 0,
+        game_over: false,
+        random: Random::new(),
+        screen_size: Point::new(0, 0),
+        snake: Vec::new(),
     }
+}
 
+impl SnakeModel {
     pub fn resize(&mut self, screen_size: &Point) {
         self.screen_size = screen_size.clone();
 
