@@ -100,62 +100,215 @@ impl From<(u32, u32)> for Point {
     }
 }
 
-impl Add for Point {
+impl Add<Point> for Point {
     type Output = Point;
 
-    fn add(self, rhs: Self) -> Self::Output {
-        Self::Output::new(self.x + rhs.x, self.y + rhs.y)
+    fn add(self, rhs: Point) -> Point {
+        Point::new(self.x + rhs.x, self.y + rhs.y)
     }
 }
 
-impl Add for &Point {
+impl Add<&Point> for Point {
     type Output = Point;
 
-    fn add(self, rhs: Self) -> Self::Output {
-        Self::Output::new(self.x + rhs.x, self.y + rhs.y)
+    fn add(self, rhs: &Point) -> Point {
+        Point::new(self.x + rhs.x, self.y + rhs.y)
     }
 }
 
-impl AddAssign<Self> for Point {
-    fn add_assign(&mut self, rhs: Self) {
+impl Add<Point> for &Point {
+    type Output = Point;
+
+    fn add(self, rhs: Point) -> Point {
+        Point::new(self.x + rhs.x, self.y + rhs.y)
+    }
+}
+
+impl Add<&Point> for &Point {
+    type Output = Point;
+
+    fn add(self, rhs: &Point) -> Point {
+        Point::new(self.x + rhs.x, self.y + rhs.y)
+    }
+}
+
+impl AddAssign<Point> for Point {
+    fn add_assign(&mut self, rhs: Point) {
         self.x += rhs.x;
         self.y += rhs.y;
     }
 }
 
-impl AddAssign<&Self> for Point {
-    fn add_assign(&mut self, rhs: &Self) {
+impl AddAssign<&Point> for Point {
+    fn add_assign(&mut self, rhs: &Point) {
         self.x += rhs.x;
         self.y += rhs.y;
     }
 }
 
-impl Sub for Point {
+impl Sub<Point> for Point {
     type Output = Point;
 
-    fn sub(self, rhs: Self) -> Self::Output {
-        Self::Output::new(self.x - rhs.x, self.y - rhs.y)
+    fn sub(self, rhs: Point) -> Point {
+        Point::new(self.x - rhs.x, self.y - rhs.y)
     }
 }
 
-impl Sub for &Point {
+impl Sub<&Point> for Point {
     type Output = Point;
 
-    fn sub(self, rhs: Self) -> Self::Output {
-        Self::Output::new(self.x - rhs.x, self.y - rhs.y)
+    fn sub(self, rhs: &Point) -> Point {
+        Point::new(self.x - rhs.x, self.y - rhs.y)
     }
 }
 
-impl SubAssign<Self> for Point {
-    fn sub_assign(&mut self, rhs: Self) {
+impl Sub<Point> for &Point {
+    type Output = Point;
+
+    fn sub(self, rhs: Point) -> Point {
+        Point::new(self.x - rhs.x, self.y - rhs.y)
+    }
+}
+
+impl Sub<&Point> for &Point {
+    type Output = Point;
+
+    fn sub(self, rhs: &Point) -> Point {
+        Point::new(self.x - rhs.x, self.y - rhs.y)
+    }
+}
+
+impl SubAssign<Point> for Point {
+    fn sub_assign(&mut self, rhs: Point) {
         self.x -= rhs.x;
         self.y -= rhs.y;
     }
 }
 
-impl SubAssign<&Self> for Point {
-    fn sub_assign(&mut self, rhs: &Self) {
+impl SubAssign<&Point> for Point {
+    fn sub_assign(&mut self, rhs: &Point) {
         self.x -= rhs.x;
         self.y -= rhs.y;
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    mod add {
+        use super::*;
+
+        #[test]
+        fn it_adds_point_and_point() {
+            let a = Point::new(2, 3);
+            let b = Point::new(5, 7);
+            assert_eq!(a + b, Point::new(7, 10));
+        }
+
+        #[test]
+        fn it_adds_point_and_ref_point() {
+            let a = Point::new(2, 3);
+            let b = &Point::new(5, 7);
+            assert_eq!(a + b, Point::new(7, 10));
+        }
+
+        #[test]
+        fn it_adds_ref_point_and_point() {
+            let a = &Point::new(2, 3);
+            let b = Point::new(5, 7);
+            assert_eq!(a + b, Point::new(7, 10));
+        }
+
+        #[test]
+        fn it_adds_ref_point_and_ref_point() {
+            let a = &Point::new(2, 3);
+            let b = &Point::new(5, 7);
+            assert_eq!(a + b, Point::new(7, 10));
+        }
+
+        #[test]
+        fn it_adds_three_ref_points() {
+            let a = &Point::new(0, 0);
+            let b = &Point::new(1, 2);
+            let c = &Point::new(1, 2);
+            assert_eq!(a + b + c, Point::new(2, 4));
+        }
+    }
+
+    mod addassign {
+        use super::*;
+
+        #[test]
+        fn it_addassigns_a_point() {
+            let mut a = Point::new(2, 3);
+            a += Point::new(5, 7);
+            assert_eq!(a, Point::new(7, 10));
+        }
+
+        #[test]
+        fn it_addassigns_a_ref_point() {
+            let mut a = Point::new(2, 3);
+            a += &Point::new(5, 7);
+            assert_eq!(a, Point::new(7, 10));
+        }
+    }
+
+    mod sub {
+        use super::*;
+
+        #[test]
+        fn it_subs_point_and_point() {
+            let a = Point::new(2, 3);
+            let b = Point::new(5, 7);
+            assert_eq!(a - b, Point::new(-3, -4));
+        }
+
+        #[test]
+        fn it_subs_point_and_ref_point() {
+            let a = Point::new(2, 3);
+            let b = &Point::new(5, 7);
+            assert_eq!(a - b, Point::new(-3, -4));
+        }
+
+        #[test]
+        fn it_subs_ref_point_and_point() {
+            let a = &Point::new(2, 3);
+            let b = Point::new(5, 7);
+            assert_eq!(a - b, Point::new(-3, -4));
+        }
+
+        #[test]
+        fn it_subs_ref_point_and_ref_point() {
+            let a = &Point::new(2, 3);
+            let b = &Point::new(5, 7);
+            assert_eq!(a - b, Point::new(-3, -4));
+        }
+
+        #[test]
+        fn it_subs_three_ref_points() {
+            let a = &Point::new(0, 0);
+            let b = &Point::new(1, 2);
+            let c = &Point::new(1, 2);
+            assert_eq!(a - b - c, Point::new(-2, -4));
+        }
+    }
+
+    mod subassign {
+        use super::*;
+
+        #[test]
+        fn it_subassigns_a_point() {
+            let mut a = Point::new(2, 3);
+            a -= Point::new(5, 7);
+            assert_eq!(a, Point::new(-3, -4));
+        }
+
+        #[test]
+        fn it_subassigns_a_ref_point() {
+            let mut a = Point::new(2, 3);
+            a -= &Point::new(5, 7);
+            assert_eq!(a, Point::new(-3, -4));
+        }
     }
 }
