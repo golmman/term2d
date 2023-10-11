@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+    "examples/term3d",
     "examples/alpha",
     "examples/animation",
     "examples/dot",

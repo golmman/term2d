@@ -561,6 +561,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "term3d"
+version = "0.1.0"
+dependencies = [
+ "term2d",
+]
+
+[[package]]
 name = "termion"
 version = "1.5.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
