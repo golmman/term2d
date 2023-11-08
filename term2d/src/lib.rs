@@ -165,6 +165,7 @@ impl<M> AppBuilder<M> {
 
         let canvas_size = self.canvas.resize().clone();
         (self.event_fn)(&app, &mut model, Event::Resize(canvas_size));
+        (self.view_fn)(&app, &model, &mut self.canvas);
 
         loop {
             let event = receiver.recv().unwrap();
